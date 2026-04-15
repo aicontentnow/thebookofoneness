@@ -1264,3 +1264,52 @@ h1, h2, h3, h4 { font-weight: 700; }
   .transmission__title { font-size: 21px; }
   .faq__item summary { font-size: 17px; }
 }
+
+/* ===============================================
+   NAV CTA + HERO CTA
+   =============================================== */
+.nav__cta {
+  display: inline-block;
+  margin-left: 1.5rem;
+  padding: 0.45rem 1.1rem;
+  background: var(--cyan, #00F0FF);
+  color: #000;
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.nav__cta:hover {
+  background: #fff;
+  color: #000;
+  box-shadow: 0 0 14px rgba(0,240,255,0.5);
+}
+
+.hero__cta {
+  margin-top: 2.5rem;
+}
+.btn--hero {
+  font-size: 1rem;
+  padding: 0.85rem 2rem;
+  letter-spacing: 0.15em;
+}
+
+@media (max-width: 768px) {
+  .nav__cta {
+    display: none;
+  }
+  .hero__cta {
+    margin-top: 2rem;
+  }
+  .btn--hero {
+    font-size: 0.9rem;
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}

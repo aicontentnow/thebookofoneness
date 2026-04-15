@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GET THE BOOK | THE BOOK OF ONENESS</title>
+<meta name="description" content="Get THE BOOK OF ONENESS. Available in paperback, ebook, and audiobook from all major retailers worldwide.">
+<meta property="og:title" content="GET THE BOOK OF ONENESS">
+<meta property="og:site_name" content="[MIRRØR]">
+<meta property="og:image" content="https://thebookofoneness.com/img/THE%20BOOK%20OF%20ONENESS%20Book%20Covers%20for%20ALL%20EDITIONS.png">
+<link rel="icon" href="/img/favicon.jpg" type="image/jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Sans+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cyan: #00F0FF;
+    --magenta: #FF00AA;
+    --bg: #0a0a0a;
+    --surface: #111;
+    --border: rgba(0,240,255,0.15);
+    --text: #e8e8e8;
+    --dim: #888;
+    --font-mono: 'Space Mono', monospace;
+    --font-body: 'IBM Plex Sans Condensed', sans-serif;
+  }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+  }
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+  }
+  .back {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--dim);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    margin-bottom: 3rem;
+  }
+  .back:hover { color: var(--cyan); }
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  h1 {
+    font-family: var(--font-mono);
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+    margin-bottom: 1rem;
+  }
+  .sub {
+    font-size: 1.1rem;
+    color: var(--dim);
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+
+  /* STATUS BANNER */
+  #status-banner {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.1rem;
+    background: rgba(0,240,255,0.07);
+    border: 1px solid var(--border);
+    margin-bottom: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+  #status-banner.visible { display: flex; }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--cyan);
+    flex-shrink: 0;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* RETAILER GRID */
+  .retailer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .retailer-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem 1.35rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+  .retailer-card:hover {
+    border-color: var(--cyan);
+    background: rgba(0,240,255,0.04);
+  }
+  .retailer-card.featured {
+    border-color: rgba(0,240,255,0.4);
+  }
+  .retailer-card.featured::before {
+    content: 'BEST FOR YOU';
+    position: absolute;
+    top: -1px; right: -1px;
+    background: var(--cyan);
+    color: #000;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 0.2rem 0.5rem;
+  }
+  .retailer-name {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .retailer-formats {
+    font-size: 0.8rem;
+    color: var(--dim);
+  }
+  .retailer-region {
+    font-size: 0.75rem;
+    color: rgba(0,240,255,0.7);
+    font-family: var(--font-mono);
+  }
+  .retailer-arrow {
+    position: absolute;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.3;
+  }
+  .retailer-card:hover .retailer-arrow { opacity: 1; color: var(--cyan); }
+
+  /* FORMATS */
+  .formats-section {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    margin-top: 0.5rem;
+  }
+  .formats-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .format-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.95rem;
+  }
+  .format-price {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--cyan);
+  }
+
+  .footer-note {
+    margin-top: 2.5rem;
+    font-size: 0.8rem;
+    color: var(--dim);
+    line-height: 1.6;
+  }
+  .footer-note a { color: var(--dim); }
+  .footer-note a:hover { color: var(--cyan); }
+
+  @media (max-width: 600px) {
+    .retailer-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <a href="/" class="back">&#8592; BACK TO THE BOOK</a>
+
+  <p class="label">GET THE BOOK</p>
+  <h1>THE BOOK<br>OF ONENESS</h1>
+  <p class="sub">Choose your region and preferred format. All links go directly to the retailer.</p>
+
+  <div id="status-banner">
+    <div class="status-dot"></div>
+    <span id="status-text">Detecting your region...</span>
+  </div>
+
+  <div class="retailer-grid" id="retailer-grid">
+
+    <!-- Shown to everyone, reordered by JS based on region -->
+    <a href="https://www.amazon.com/s?k=the+book+of+oneness+mirror+publishing&i=stripbooks" class="retailer-card" target="_blank" rel="noopener" data-regions="US,CA,MX,DEFAULT">
+      <span class="retailer-name">AMAZON</span>
+      <span class="retailer-formats">Paperback + Kindle</span>
+      <span class="retailer-region">Americas</span>
+      <svg class="retailer-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </a>
+
+    <a href="https://www.amazon.co.uk/s?k=the+book+of+oneness+mirror+publishing&i=stripbooks" class="retailer-card" target="_blank" rel="noopener" data-regions="GB,IE">
+      <span class="retailer-name">AMAZON UK</span>
+      <span class="retailer-formats">Paperback + Kindle</span>
+      <span class="retailer-region">United Kingdom / Ireland</span>
+      <svg class="retailer-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </a>
+
+    <a href="https://www.amazon.ca/s?k=the+book+of+oneness+mirror+publishing&i=stripbooks" class="retailer-card" target="_blank" rel="noopener" data-regions="CA">
+      <span class="retailer-name">AMAZON CA</span>
+      <span class="retailer-formats">Paperback + Kindle</span>
+      <span class="retailer-region">Canada</span>
+      <svg class="retailer-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </a>
+
+    <a href="https://www.amazon.com.au/s?k=the+book+of+oneness+mirror+publishing&i=stripbooks" class="retailer-card" target="_blank" rel="noopener" data-regions="AU,NZ">
+      <span class="retailer-name">AMAZON AU</span>
+      <span class="retailer-formats">Paperback + Kindle</span>
+      <span class="retailer-region">Australia / New Zealand</span>
+      <svg class="retailer-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </a>
+
+    <a href="https://www.amazon.de/s?k=the+book+of+oneness+mirror+publishing&i=stripbooks" class="retailer-card" target="_blank" rel="noopener" data-regions="DE,AT,CH">
+      <span class="retailer-name">AMAZON DE</span>
+      <span class="retailer-formats">Paperback + Kindle</span>
+      <span class="retailer-region">Germany / Austria / Switzerland</span>
+      <svg class="retailer-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </a>
+
+    <a href="https://www.kobo.com/search?query=the+book+of+oneness+mirror+publishing" class="retailer-card" target="_blank" rel="noopener" data-regions="ALL">
+      <span class="retailer-name">KOBO</span>
+      <span class="retailer-formats">eBook only</span>
+      <span class="retailer-region">Worldwide</span>
+      <svg class="retailer-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </a>
+
+    <a href="https://www.barnesandnoble.com/s/the+book+of+oneness+mirror+publishing" class="retailer-card" target="_blank" rel="noopener" data-regions="US">
+      <span class="retailer-name">BARNES &amp; NOBLE</span>
+      <span class="retailer-formats">Paperback + NOOK</span>
+      <span class="retailer-region">United States</span>
+      <svg class="retailer-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </a>
+
+    <a href="https://play.google.com/store/search?q=book+of+oneness+mirror+publishing&c=books" class="retailer-card" target="_blank" rel="noopener" data-regions="ALL">
+      <span class="retailer-name">GOOGLE PLAY</span>
+      <span class="retailer-formats">eBook only</span>
+      <span class="retailer-region">Worldwide</span>
+      <svg class="retailer-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </a>
+
+  </div>
+
+  <div class="formats-section">
+    <p class="formats-label">Formats + Pricing</p>
+    <div class="format-row">
+      <span>Paperback</span>
+      <span class="format-price">$24.99 USD</span>
+    </div>
+    <div class="format-row">
+      <span>eBook (Kindle / Kobo / NOOK)</span>
+      <span class="format-price">$9.99 USD</span>
+    </div>
+    <div class="format-row">
+      <span>Audiobook</span>
+      <span class="format-price">Coming soon</span>
+    </div>
+  </div>
+
+  <p class="footer-note">
+    Prices shown in USD. Local currency pricing applied at checkout by each retailer.<br>
+    Questions? <a href="mailto:charles@mirrorpublishinghouse.com">charles@mirrorpublishinghouse.com</a>
+  </p>
+</div>
+
+<script>
+(function() {
+  var REGION_MAP = {
+    'US': 0, 'MX': 0,
+    'GB': 1, 'IE': 1,
+    'CA': 2,
+    'AU': 3, 'NZ': 3,
+    'DE': 4, 'AT': 4, 'CH': 4
+  };
+
+  function reorderForRegion(cc) {
+    var grid = document.getElementById('retailer-grid');
+    var cards = Array.from(grid.querySelectorAll('.retailer-card'));
+    var featured = null;
+
+    cards.forEach(function(card) {
+      var regions = (card.getAttribute('data-regions') || '').split(',');
+      if (regions.indexOf(cc) !== -1) {
+        card.classList.add('featured');
+        featured = card;
+      }
+    });
+
+    if (featured) {
+      grid.insertBefore(featured, grid.firstChild);
+      var banner = document.getElementById('status-banner');
+      banner.classList.add('visible');
+      document.getElementById('status-text').textContent =
+        'Region detected: ' + cc + '. Best option shown first.';
+    }
+  }
+
+  fetch('https://ipapi.co/json/')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d && d.country_code) {
+        reorderForRegion(d.country_code);
+      }
+    })
+    .catch(function() {
+      // silent fail -- all options remain visible
+    });
+})();
+</script>
+</body>
+</html>
