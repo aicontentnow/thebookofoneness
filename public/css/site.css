@@ -831,7 +831,7 @@ h1, h2, h3, h4 { font-weight: 700; }
 .signal-subscribe__input:focus { border-color: rgba(0, 240, 255, 0.4); }
 .signal-subscribe__btn {
   background: var(--pink);
-  color: var(--white);
+  color: var(--black);
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
@@ -1271,7 +1271,7 @@ h1, h2, h3, h4 { font-weight: 700; }
 .nav__cta {
   display: inline-block;
   margin-left: 1.5rem;
-  padding: 0.45rem 1.1rem;
+  padding: 0.35rem 0.9rem;
   background: var(--cyan, #00F0FF);
   color: #000;
   font-family: var(--font-mono, 'Space Mono', monospace);
@@ -1292,11 +1292,7 @@ h1, h2, h3, h4 { font-weight: 700; }
 .hero__cta {
   margin-top: 2.5rem;
 }
-.btn--hero {
-  font-size: 1rem;
-  padding: 0.85rem 2rem;
-  letter-spacing: 0.15em;
-}
+/* btn--hero removed -- hero button now uses identical style to book section btn--primary */
 
 @media (max-width: 768px) {
   .nav__cta {
@@ -1305,9 +1301,7 @@ h1, h2, h3, h4 { font-weight: 700; }
   .hero__cta {
     margin-top: 2rem;
   }
-  .btn--hero {
-    font-size: 0.9rem;
-    padding: 0.75rem 1.5rem;
+  .hero__cta .btn {
     width: 100%;
     text-align: center;
     justify-content: center;
