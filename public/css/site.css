@@ -706,7 +706,7 @@ h1, h2, h3, h4 { font-weight: 700; }
    =============================================== */
 .btn {
   display: inline-flex; align-items: center; gap: 10px;
-  padding: 16px 32px;
+  padding: 12px 38px;
   font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 700;
@@ -1269,24 +1269,29 @@ h1, h2, h3, h4 { font-weight: 700; }
    NAV CTA + HERO CTA
    =============================================== */
 .nav__cta {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   margin-left: 1.5rem;
-  padding: 0.35rem 0.9rem;
+  padding: 12px 38px;
   background: var(--cyan, #00F0FF);
   color: #000;
   font-family: var(--font-mono, 'Space Mono', monospace);
-  font-size: 0.72rem;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--cyan, #00F0FF);
+  transition: all 0.25s;
 }
 .nav__cta:hover {
   background: #fff;
   color: #000;
+  border-color: #fff;
   box-shadow: 0 0 14px rgba(0,240,255,0.5);
+  transform: translateY(-1px);
 }
 
 .hero__cta {
