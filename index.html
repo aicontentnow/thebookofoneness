@@ -85,276 +85,4085 @@
 <link rel="icon" href="/img/favicon.jpg" type="image/jpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Sans+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/site.css">
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="glossary-search.css">
+<style>
+/* =============================================================
+   THE BOOK OF ONENESS — site.css
+   Ported from mirror.exposed visual system.
+   Hand off to Claude Code: lift this <style> block straight into
+   public/css/site.css. Keep the existing scanlines/grain/interference
+   JS — these styles only describe the surfaces they sit on.
+   ============================================================= */
+:root{
+  /* surface */
+  --void:        #0A0A0A;
+  --void-2:      #050505;
+  --void-3:      #111111;
+  --void-4:      #161616;
+
+  /* type colour */
+  --fg:          #F0F0F0;
+  --fg-2:        #B8B8B8;
+  --fg-muted:    #666666;
+  --fg-line:     #2A2A2A;
+
+  /* brand accent — yellow (per hub treatment) */
+  --yellow:        #FFE000;
+  --yellow-d:      #E5C800;
+  --yellow-hover:  #FFEC4D;
+  --yellow-tint:   rgba(255,224,0,0.10);
+
+  /* CTA accent — pink (per direction) */
+  --pink:        #FF2D6F;
+  --pink-d:      #E0245E;
+  --pink-hover:  #FF4F88;
+  --pink-tint:   rgba(255,45,111,0.12);
+
+  /* Legacy aliases (existing rules still use --gold) */
+  --gold:        var(--yellow);
+  --gold-d:      var(--yellow-d);
+  --gold-tint:   var(--yellow-tint);
+
+  /* sparing accents — kept from cover system */
+  --signal-red:    #E5232F;
+  --signal-cyan:   #00C2C7;
+  --signal-green:  #4ADE80;   /* live / available status */
+
+  /* borders */
+  --hairline:        rgba(240,240,240,0.08);
+  --hairline-strong: rgba(240,240,240,0.18);
+  --hairline-gold:   rgba(255,224,0,0.32);
+
+  /* type — Abril Fatface is reserved for the book itself (cover lockup,
+     [MIRRØR] mark). Section heads + UI use Space Grotesk per the hub. */
+  --f-display: 'Abril Fatface', 'Playfair Display', Georgia, serif;
+  --f-body:    'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --f-head:    'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --f-mono:    'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* layout */
+  --max-w:     1440px;
+  --gutter:    clamp(20px, 4vw, 56px);
+  --section-y: clamp(36px, 5vw, 70px);
+  --nav-h:     68px;
+  --header-h:  var(--nav-h);
+
+  /* motion */
+  --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+  --dur:       240ms;
+  --dur-fast:  140ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: var(--header-h); }
+
+body {
+  margin: 0;
+  background: var(--void);
+  color: var(--fg);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--gold); color: var(--void); }
+
+a { color: inherit; text-decoration: none; transition: color var(--dur-fast) var(--ease); }
+a:hover { color: var(--gold); }
+
+img { display: block; max-width: 100%; }
+
+/* =============================================================
+   AMBIENT LAYERS — scanlines, grain, interference
+   These four <div>s sit fixed across the viewport and stack
+   above content (no pointer events). Carry-over from current
+   thebookofoneness.com. Claude Code: keep your existing JS for
+   the interference and noise canvas — these are just the
+   visual surfaces. The scanlines layer is CSS-only.
+   ============================================================= */
+.scanlines, .interference, .grain {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 80;
+}
+.scanlines {
+  background:
+    repeating-linear-gradient(0deg,
+      rgba(255,255,255,0.025) 0 1px,
+      transparent 1px 3px);
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+}
+.interference {
+  background:
+    repeating-linear-gradient(0deg,
+      rgba(0, 194, 199, 0.04) 0 1px,
+      transparent 1px 4px),
+    repeating-linear-gradient(0deg,
+      rgba(229, 35, 47, 0.03) 0 1px,
+      transparent 2px 7px);
+  mix-blend-mode: screen;
+  opacity: 0.5;
+  animation: interference-drift 12s linear infinite;
+}
+@keyframes interference-drift {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+.grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.10 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+  opacity: 0.45;
+}
+.vignette {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 79;
+  background: radial-gradient(ellipse at center,
+    transparent 40%,
+    rgba(0,0,0,0.55) 100%);
+}
+
+/* =============================================================
+   GLITCH TYPE TREATMENT — for [data-glitch]
+   ============================================================= */
+[data-glitch] {
+  position: relative;
+  display: inline-block;
+}
+[data-glitch]::before,
+[data-glitch]::after {
+  content: attr(data-glitch);
+  position: absolute; left: 0; top: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+[data-glitch]::before {
+  color: var(--signal-cyan);
+  transform: translate(-1.5px, 0);
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  clip-path: polygon(0 0, 100% 0, 100% 38%, 0 38%);
+  animation: glitch-a 5s steps(1) infinite;
+}
+[data-glitch]::after {
+  color: var(--signal-red);
+  transform: translate(1.5px, 0);
+  mix-blend-mode: screen;
+  opacity: 0.5;
+  clip-path: polygon(0 62%, 100% 62%, 100% 100%, 0 100%);
+  animation: glitch-b 7s steps(1) infinite;
+}
+@keyframes glitch-a {
+  0%, 92%, 100% { transform: translate(-1.5px, 0); }
+  93% { transform: translate(-6px, 1px); }
+  95% { transform: translate(3px, -2px); }
+  97% { transform: translate(-4px, 1px); }
+}
+@keyframes glitch-b {
+  0%, 92%, 100% { transform: translate(1.5px, 0); }
+  93% { transform: translate(5px, -1px); }
+  95% { transform: translate(-3px, 2px); }
+  97% { transform: translate(4px, -1px); }
+}
+
+/* Hero title — dialled-up glitch: more frequent, more visible. */
+.hero__h1 {
+  position: relative;
+  animation: hero-jitter 4s steps(1) infinite;
+}
+.hero__h1 .lf[data-glitch]::before,
+.hero__h1 .lf[data-glitch]::after {
+  opacity: 0.72;
+}
+.hero__h1 .lf[data-glitch]::before {
+  animation: hero-glitch-a 2.6s steps(1) infinite;
+}
+.hero__h1 .lf[data-glitch]::after {
+  animation: hero-glitch-b 2.6s steps(1) infinite;
+}
+.hero__h1 .lf[data-glitch]:last-child::before { animation-delay: 0.45s; }
+.hero__h1 .lf[data-glitch]:last-child::after  { animation-delay: 0.45s; }
+@keyframes hero-jitter {
+  0%, 100%  { transform: translate(0, 0); }
+  12%       { transform: translate(-1px, 0); }
+  13%       { transform: translate(0, 0); }
+  42%       { transform: translate(2px, -1px); }
+  43%       { transform: translate(0, 0); }
+  68%       { transform: translate(-2px, 1px); }
+  69%       { transform: translate(0, 0); }
+  91%       { transform: translate(3px, 0); }
+  92%       { transform: translate(0, 0); }
+}
+@keyframes hero-glitch-a {
+  0%, 8%, 100%  { transform: translate(-2px, 0);  clip-path: polygon(0 0, 100% 0, 100% 38%, 0 38%); }
+  9%            { transform: translate(-10px, 2px); clip-path: polygon(0 12%, 100% 12%, 100% 32%, 0 32%); }
+  11%           { transform: translate(-2px, 0);  clip-path: polygon(0 0, 100% 0, 100% 38%, 0 38%); }
+  30%           { transform: translate(-7px, -3px); clip-path: polygon(0 22%, 100% 22%, 100% 60%, 0 60%); }
+  32%           { transform: translate(-2px, 0);  clip-path: polygon(0 0, 100% 0, 100% 38%, 0 38%); }
+  56%           { transform: translate(-12px, 1px); clip-path: polygon(0 8%, 100% 8%, 100% 28%, 0 28%); }
+  58%           { transform: translate(-2px, 0);  clip-path: polygon(0 0, 100% 0, 100% 38%, 0 38%); }
+  80%           { transform: translate(-5px, -2px); clip-path: polygon(0 40%, 100% 40%, 100% 70%, 0 70%); }
+  82%           { transform: translate(-2px, 0);  clip-path: polygon(0 0, 100% 0, 100% 38%, 0 38%); }
+}
+@keyframes hero-glitch-b {
+  0%, 8%, 100%  { transform: translate(2px, 0);   clip-path: polygon(0 62%, 100% 62%, 100% 100%, 0 100%); }
+  9%            { transform: translate(11px, -2px); clip-path: polygon(0 70%, 100% 70%, 100% 92%, 0 92%); }
+  11%           { transform: translate(2px, 0);   clip-path: polygon(0 62%, 100% 62%, 100% 100%, 0 100%); }
+  30%           { transform: translate(8px, 3px);  clip-path: polygon(0 42%, 100% 42%, 100% 78%, 0 78%); }
+  32%           { transform: translate(2px, 0);   clip-path: polygon(0 62%, 100% 62%, 100% 100%, 0 100%); }
+  56%           { transform: translate(13px, -1px); clip-path: polygon(0 78%, 100% 78%, 100% 100%, 0 100%); }
+  58%           { transform: translate(2px, 0);   clip-path: polygon(0 62%, 100% 62%, 100% 100%, 0 100%); }
+  80%           { transform: translate(6px, 2px);  clip-path: polygon(0 50%, 100% 50%, 100% 88%, 0 88%); }
+  82%           { transform: translate(2px, 0);   clip-path: polygon(0 62%, 100% 62%, 100% 100%, 0 100%); }
+}
+
+/* =============================================================
+   LAYOUT
+   ============================================================= */
+.container {
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* =============================================================
+   NAV
+   ============================================================= */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: rgba(10,10,10,0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--hairline);
+  z-index: 100;
+}
+.nav__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 100%;
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.nav__brand {
+  font-family: var(--f-body);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+.nav__brand .brk { color: var(--fg-muted); }
+.nav__links {
+  display: flex; gap: 32px;
+  list-style: none; padding: 0; margin: 0;
+}
+.nav__links a {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.nav__links a:hover { color: var(--gold); }
+.nav__cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: var(--pink);
+  padding: 12px 18px;
+  transition: background var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.nav__cta:hover {
+  background: var(--pink-hover);
+  color: var(--fg);
+  box-shadow: 0 0 0 1px var(--pink), 0 8px 24px -8px rgba(255,45,111,0.55);
+}
+.nav__cta .arr-ico { width: 14px; height: 14px; }
+@media (max-width: 800px) {
+  .nav__links { display: none; }
+}
+
+/* =============================================================
+   GLOBAL SEARCH BAR — persistent strip below the nav.
+   =============================================================
+   Always visible across every page. Reads from window.GLOSSARY
+   (loaded via glossary-data.js earlier in the document) and
+   surfaces matching terms in a dropdown panel anchored to the
+   bar's bottom edge. Pure client-side; no backend.
+
+   Layout:
+     [ // SEARCH THE GLOSSARY ]  > _________________________  [ ⌘K ]
+                                  ↑ flex-grow input
+   Mobile: eyebrow + ⌘K hint hide; only the input + > prompt
+   remain so it stays usable down to 320px.
+   ============================================================= */
+.search-bar {
+  position: fixed;
+  top: var(--nav-h);
+  left: 0; right: 0;
+  height: var(--search-h);
+  background: rgba(5,5,5,0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--hairline);
+  z-index: 99; /* one below the nav */
+}
+.search-bar__inner {
+  display: flex; align-items: center;
+  height: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  gap: 18px;
+}
+.search-bar__eyebrow {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.search-bar__eyebrow .slash { color: var(--pink); margin-right: 6px; }
+.search-bar__prompt {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pink);
+  flex-shrink: 0;
+  margin-right: -8px;
+}
+.search-bar__input {
+  flex: 1; min-width: 0;
+  background: transparent;
+  border: 0; outline: 0;
+  color: var(--fg);
+  font-family: var(--f-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  padding: 0;
+  height: 100%;
+}
+.search-bar__input::placeholder {
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+.search-bar__input::-webkit-search-cancel-button { display: none; }
+.search-bar__kbd {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  border: 1px solid var(--hairline-strong);
+  padding: 4px 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.search-bar:focus-within { background: rgba(0,0,0,0.96); }
+.search-bar:focus-within .search-bar__eyebrow .slash { color: var(--gold); }
+.search-bar:focus-within { border-bottom-color: var(--gold-line); }
+.search-bar:focus-within .search-bar__kbd { color: var(--fg-2); border-color: var(--hairline-strong); }
+
+/* Dropdown — anchored below the search bar, full container width. */
+.search-bar__results {
+  position: absolute;
+  top: var(--search-h);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--max-w);
+  padding: 0 var(--gutter);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.search-bar.is-open .search-bar__results { opacity: 1; pointer-events: auto; }
+.search-bar__results-inner {
+  background: rgba(5,5,5,0.98);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--hairline-strong);
+  border-top: 0;
+  max-height: 60vh;
+  overflow-y: auto;
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,0.9);
+}
+.search-bar__results-empty {
+  padding: 18px 22px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.search-bar__results-empty .slash { color: var(--pink); margin-right: 8px; }
+.search-bar__results-meta {
+  padding: 12px 22px;
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  border-bottom: 1px solid var(--hairline);
+}
+.search-bar__results-meta b { color: var(--yellow); font-weight: 500; }
+
+.search-hit {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  gap: 24px;
+  align-items: baseline;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--hairline);
+  text-decoration: none;
+  color: var(--fg);
+  transition: background var(--dur-fast) var(--ease);
+}
+.search-hit:last-child { border-bottom: 0; }
+.search-hit:hover,
+.search-hit.is-focused {
+  background: rgba(255,224,0,0.06);
+}
+.search-hit__bucket {
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--signal-cyan);
+  white-space: nowrap;
+}
+.search-hit__name {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--fg);
+  min-width: 0;
+}
+.search-hit__name mark {
+  background: rgba(255,224,0,0.22);
+  color: var(--yellow);
+  padding: 0 2px;
+}
+.search-hit__snip {
+  font-family: var(--f-body);
+  font-size: 12px;
+  color: var(--fg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 480px;
+  justify-self: end;
+}
+@media (max-width: 800px) {
+  .search-bar__eyebrow,
+  .search-bar__kbd { display: none; }
+  .search-bar__inner { gap: 10px; }
+  .search-hit {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 14px 18px;
+  }
+  .search-hit__snip { white-space: normal; max-width: none; justify-self: start; }
+}
+
+/* =============================================================
+   HERO
+   ============================================================= */
+.hero {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: calc(var(--header-h) + 32px) var(--gutter) 48px;
+}
+.hero__bg {
+  position: absolute; inset: 0;
+  background-image: url("assets/hero-glitch-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: contrast(1.05) saturate(1.05);
+  animation: hero-bg-jitter 6s steps(1) infinite;
+}
+@keyframes hero-bg-jitter {
+  0%, 100%   { transform: translate(0, 0) scale(1.02); }
+  18%        { transform: translate(-4px, 1px) scale(1.02); }
+  19%        { transform: translate(0, 0) scale(1.02); }
+  47%        { transform: translate(3px, -2px) scale(1.02); }
+  48%        { transform: translate(0, 0) scale(1.02); }
+  72%        { transform: translate(-2px, 2px) scale(1.022); }
+  73%        { transform: translate(0, 0) scale(1.02); }
+  88%        { transform: translate(5px, 0) scale(1.02); }
+  89%        { transform: translate(0, 0) scale(1.02); }
+}
+.hero__scrim {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.55) 70%, rgba(10,10,10,0.92) 100%),
+    linear-gradient(180deg, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0.55) 100%);
+}
+.hero__inner {
+  position: relative;
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: clamp(40px, 8vw, 96px);
+  min-height: calc(92vh - var(--header-h) - 80px);
+}
+.hero__top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+/* Generic live-status dot — use anywhere we surface "live / available". */
+.status-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--signal-green);
+  box-shadow: 0 0 12px var(--signal-green), 0 0 4px var(--signal-green);
+  animation: status-blink 1.4s steps(2) infinite;
+  vertical-align: 0.05em;
+  margin-right: 8px;
+}
+.status-text { color: var(--signal-green); }
+
+.hero__top .pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--signal-green);
+  box-shadow: 0 0 12px var(--signal-green), 0 0 4px var(--signal-green);
+  animation: status-blink 1.4s steps(2) infinite;
+}
+.hero__top .pulse-label { color: var(--signal-green); }
+@keyframes status-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.15; }
+}
+.hero__sep { color: var(--fg-line); }
+
+.hero__center {
+  display: flex; flex-direction: column;
+  justify-content: center;
+  gap: clamp(22px, 3.5vw, 40px);
+  max-width: 1100px;
+}
+.hero__eyebrow {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.hero__h1 {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(60px, 13vw, 220px);
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--fg);
+  text-shadow: 0 4px 40px rgba(0,0,0,0.7);
+}
+.hero__h1 .lf { display: block; }
+.hero__byline {
+  font-family: var(--f-mono);
+  font-size: clamp(13px, 1.4vw, 16px);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.hero__byline .brk { color: var(--fg-muted); }
+.hero__byline .name { color: var(--fg); }
+
+/* =============================================================
+   BRAND LOCKUPS — [MIRRØR] vs MIRROR Publishing
+   ============================================================= */
+/* Per Co-Work strategic response (Q8): these are two different
+   entities and the visual treatment needs to reflect that.
+   [MIRRØR]      = the author wordmark. Chrome metallic treatment.
+   MIRROR Pub.   = the imprint. Plain muted typography, subordinate.
+   The two should never read as the same brand at a glance. */
+.brand-mirror {
+  /* Chrome metallic gradient — echoes the chrome aura on the About
+     mark, sized down to a typographic register. */
+  background: linear-gradient(
+    178deg,
+    #ffffff 0%,
+    #d8dde6 22%,
+    #f4f6fa 44%,
+    #8c93a0 58%,
+    #c8ced8 78%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+          color: transparent;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 24px rgba(220,228,240,0.18);
+}
+.brand-mirror .brk {
+  /* Brackets dim slightly so the wordmark dominates. The whole
+     lockup still reads as one object — chrome from start to end. */
+  opacity: 0.55;
+  font-weight: 400;
+}
+/* Fallback for browsers without background-clip:text */
+@supports not (-webkit-background-clip: text) {
+  .brand-mirror {
+    color: #e2e6eb;
+    -webkit-text-fill-color: currentColor;
+    background: none;
+  }
+}
+.brand-pub {
+  /* MIRROR Publishing — the logistics layer. Plain, subordinate,
+     never confusable with the chrome wordmark above. */
+  color: var(--fg-2);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  font-size: 0.94em;
+}
+.hero__tagline {
+  font-family: var(--f-body);
+  font-size: clamp(18px, 1.8vw, 22px);
+  line-height: 1.45;
+  color: var(--fg);
+  max-width: 38ch;
+  margin: 0;
+  font-weight: 400;
+}
+.hero__tagline .cap {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.hero__ctas {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  margin-top: 8px;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 17px 26px;
+  border: 0;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+.btn--pink {
+  background: var(--pink);
+  color: var(--fg);
+}
+.btn--pink:hover {
+  background: var(--pink-hover);
+  color: var(--fg);
+  box-shadow: 0 0 0 1px var(--pink), 0 14px 36px -8px rgba(255,45,111,0.55);
+}
+/* Legacy alias — anything tagged .btn--gold renders as the pink CTA. */
+.btn--gold { background: var(--pink); color: var(--fg); }
+.btn--gold:hover { background: var(--pink-hover); color: var(--fg); box-shadow: 0 0 0 1px var(--pink), 0 14px 36px -8px rgba(255,45,111,0.55); }
+.btn--ghost {
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--hairline-strong);
+}
+.btn--ghost:hover {
+  border-color: var(--pink);
+  color: var(--pink);
+  background: var(--pink-tint);
+}
+.btn .arr-ico {
+  width: 22px; height: 22px;
+  flex-shrink: 0;
+  transition: transform var(--dur) var(--ease);
+  display: block;
+}
+.btn:hover .arr-ico { transform: translateX(5px); }
+.btn .arr-ico--down { transition: transform var(--dur) var(--ease); }
+.btn:hover .arr-ico--down { transform: translateY(4px); }
+
+.hero__meta {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+}
+.hero__domain {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  text-transform: lowercase;
+  color: var(--fg-2);
+}
+.hero__domain .gold { color: var(--gold); }
+.hero__social {
+  display: flex; gap: 18px;
+  list-style: none; padding: 0; margin: 0;
+}
+.hero__social a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border: 1px solid var(--hairline-strong);
+  color: var(--fg-2);
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.hero__social a:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.hero__social svg { width: 16px; height: 16px; display: block; }
+
+/* Floating social — fixed-position vertical column on the right. */
+.float-social {
+  position: fixed;
+  top: 50%; right: 22px;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column;
+  gap: 10px;
+  list-style: none; padding: 0; margin: 0;
+  z-index: 90;
+}
+.float-social::before,
+.float-social::after {
+  content: '';
+  width: 1px; height: 36px;
+  background: var(--hairline-strong);
+  align-self: center;
+}
+.float-social a {
+  width: 34px; height: 34px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--hairline-strong);
+  background: rgba(10,10,10,0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--fg-2);
+  transition: border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease);
+}
+.float-social a:hover {
+  border-color: var(--yellow);
+  color: var(--yellow);
+  background: rgba(255,224,0,0.10);
+}
+.float-social a svg { width: 15px; height: 15px; display: block; }
+@media (max-width: 720px) {
+  .float-social { display: none; }
+}
+
+/* =============================================================
+   SECTION SHELL
+   ============================================================= */
+.section {
+  position: relative;
+  padding: var(--section-y) 0;
+  border-top: 1px solid var(--hairline);
+}
+/* Section 01 follows the hero — cut the top breathing in half so the
+   buttons hand off directly into THE BOOK without a big dead band. */
+#the-book.section { padding-top: clamp(16px, 2vw, 32px); }
+
+.section--alt { background: var(--void-2); }
+
+.section__head {
+  display: block;
+  margin-bottom: clamp(40px, 6vw, 80px);
+}
+.section__head .section__sub { max-width: 60ch; }
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-bottom: 24px;
+}
+.eyebrow .slash { color: var(--yellow); }
+.eyebrow .num { color: var(--yellow); margin-right: 6px; }
+.eyebrow .lbl { color: var(--fg-muted); }
+.section__title {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: clamp(72px, 13vw, 196px);
+  line-height: 0.86;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--yellow);
+}
+.section__sub {
+  font-family: var(--f-body);
+  font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.5;
+  color: var(--fg-muted);
+  margin: 20px 0 0;
+  max-width: 60ch;
+}
+.section__sub em { color: var(--yellow); font-style: normal; font-weight: 500; }
+
+/* =============================================================
+   SECTION 01 — THE BOOK
+   ============================================================= */
+.book-description {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(40px, 7vw, 120px);
+  margin-bottom: clamp(80px, 12vw, 160px);
+}
+@media (max-width: 900px) { .book-description { grid-template-columns: 1fr; } }
+.book-description__stack {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  display: flex; flex-direction: column;
+  gap: 14px;
+}
+.book-description__stack b { color: var(--gold); font-weight: 500; }
+.book-description__body p {
+  font-family: var(--f-body);
+  font-size: clamp(18px, 1.5vw, 21px);
+  line-height: 1.55;
+  color: var(--fg);
+  margin: 0 0 22px;
+  max-width: 56ch;
+}
+.book-description__body p + p { color: var(--fg-2); }
+.book-description__body p.dim {
+  font-size: 14px;
+  color: var(--fg-muted);
+  letter-spacing: 0.02em;
+  border-top: 1px solid var(--hairline);
+  padding-top: 22px;
+  margin-top: 28px;
+}
+
+/* Editions — two equal cards, no hierarchy.
+   Per Bodhi: don't position anything as premium vs not-premium. Users
+   pick their edition on /get-the-book — this section just presents the
+   two ways the book ships now. Audiobook + Night editions live behind
+   the GET THE BOOK button, not on this page. */
+.editions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(18px, 2vw, 30px);
+}
+@media (max-width: 800px) {
+  .editions { grid-template-columns: 1fr; }
+}
+
+.edition {
+  /* Per-edition accent — overridden by .edition--{variant}.
+     Fallback is yellow so any unflagged card still works. */
+  --ed-rgb: 255,224,0;
+  --ed-hex: #FFE000;
+  position: relative;
+  background: var(--void-3);
+  border: 1px solid var(--hairline);
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.1fr);
+  gap: clamp(18px, 1.8vw, 28px);
+  padding: clamp(20px, 2vw, 28px);
+  text-decoration: none;
+  color: var(--fg);
+  transition: border-color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              transform var(--dur) var(--ease);
+  overflow: hidden;
+}
+@media (max-width: 800px) {
+  .edition { grid-template-columns: 1fr; }
+  .edition .edition__cover { max-width: 240px; }
+}
+.edition__body {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.edition__num { margin-bottom: 4px; }
+.edition__name {
+  font-size: clamp(22px, 2vw, 28px);
+  letter-spacing: -0.005em;
+  margin: 2px 0 4px;
+}
+.edition__price {
+  display: flex; align-items: baseline; gap: 8px;
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: clamp(28px, 2.8vw, 40px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--ed-hex);
+  margin: 4px 0 8px;
+}
+.edition__price .currency {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  color: var(--fg-muted);
+  font-weight: 400;
+}
+.edition__cta { margin-top: auto; }
+.edition--ebook { --ed-rgb: 255,45,111; --ed-hex: #FF2D6F; }
+.edition--day   { --ed-rgb: 255,224,0;  --ed-hex: #FFE000; }
+.edition--night { --ed-rgb: 0,194,199;  --ed-hex: #00C2C7; }
+.edition:hover {
+  /* Standard card hover — mirrored on .part and .video-card so every
+     interactive card on the site reads the same: accent border, accent
+     bg tint, accent glow, tiny lift + scale. Per-card accent comes from
+     --ed-rgb / --ed-hex (editions), --arc-rgb / --arc-hex (parts),
+     --vc-rgb / --vc-hex (video cards). */
+  border-color: var(--ed-hex);
+  background:
+    linear-gradient(rgba(var(--ed-rgb),0.10), rgba(var(--ed-rgb),0.10)),
+    var(--void-4);
+  box-shadow:
+    0 0 0 1px rgba(var(--ed-rgb),0.40),
+    0 26px 64px -16px rgba(var(--ed-rgb),0.50);
+  transform: translateY(-3px) scale(1.012);
+}
+.edition__num {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.edition__cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  background: var(--void-2);
+  border: 1px solid var(--hairline);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 18px 36px -16px rgba(0,0,0,0.7);
+}
+.edition__cover img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: contrast(1.05);
+}
+/* Format chip — sits on the right of the cover (title is left-aligned
+   on every cover, so the chip needs the opposite side to breathe).
+   Subtle hairline + colour tuned to that edition's accent dot. */
+.edition__format {
+  position: absolute;
+  right: 10px; top: 10px;
+  z-index: 2;
+  padding: 5px 9px;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: rgba(10,10,10,0.78);
+  border: 1px solid var(--hairline-strong);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.edition__format--ebook     { color: var(--pink);         border-color: rgba(255,45,111,0.35); }
+.edition__format--day       { color: var(--yellow);       border-color: rgba(255,224,0,0.35); }
+.edition__format--night     { color: var(--signal-cyan);  border-color: rgba(0,194,199,0.40); }
+.edition__format--audiobook { color: var(--signal-green); border-color: rgba(74,222,128,0.40); }
+.edition__format--soon      { color: var(--fg-muted);     border-color: var(--hairline-strong); }
+
+.edition__cover-ph {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px;
+  background:
+    repeating-linear-gradient(135deg,
+      rgba(255,224,0,0.04) 0 12px,
+      transparent 12px 24px),
+    var(--void-2);
+  color: var(--fg-muted);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0 18px;
+}
+.edition__cover-ph .ring {
+  width: 56px; height: 56px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 50%;
+  position: relative;
+}
+.edition__cover-ph .ring::after {
+  content: '';
+  position: absolute; left: 50%; top: 50%;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--fg-muted);
+  transform: translate(-50%, -50%);
+}
+.edition__cover-ph--day {
+  background:
+    repeating-linear-gradient(135deg,
+      rgba(240,240,240,0.04) 0 12px,
+      transparent 12px 24px),
+    #1c1a16;
+  color: rgba(240,240,240,0.5);
+}
+.edition__cover-ph--day .ring { border-color: rgba(240,240,240,0.25); }
+.edition__cover-ph--day .ring::after { background: rgba(240,240,240,0.45); }
+
+.edition__name {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--fg);
+  margin: 0;
+}
+.edition__meta {
+  display: flex; justify-content: space-between;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.edition__cta {
+  display: inline-flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--yellow);
+}
+.edition__cta .arr-ico {
+  width: 16px; height: 16px;
+  flex-shrink: 0;
+  transition: transform var(--dur) var(--ease);
+}
+.edition:hover .edition__cta { color: var(--ed-hex); }
+.edition:hover .edition__cta .arr-ico { transform: translateX(4px); }
+.edition__cta--muted {
+  color: var(--fg-muted);
+  letter-spacing: 0.32em;
+}
+.edition--soon {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.edition--soon .edition__cover { opacity: 0.65; }
+.edition--soon .edition__cover-ph {
+  background:
+    repeating-linear-gradient(45deg,
+      rgba(255,224,0,0.05) 0 8px,
+      transparent 8px 16px),
+    var(--void-2);
+}
+
+/* (carousel rail meta removed — no more horizontal scroll) */
+
+.master-cta {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: clamp(24px, 4vw, 64px);
+  align-items: center;
+  padding: clamp(28px, 4vw, 48px) clamp(28px, 4vw, 56px);
+  margin-bottom: clamp(48px, 6vw, 80px);
+  border: 1px solid rgba(255,45,111,0.32);
+  background:
+    linear-gradient(180deg, var(--pink-tint) 0%, rgba(255,45,111,0.04) 100%),
+    var(--void-3);
+}
+@media (max-width: 720px) {
+  .master-cta { grid-template-columns: 1fr; gap: 24px; }
+}
+.master-cta__copy {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.master-cta__label {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--pink);
+  display: flex; align-items: center; gap: 8px;
+}
+.master-cta__title {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: clamp(28px, 3vw, 44px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--fg);
+  margin: 0;
+}
+.master-cta__sub {
+  font-family: var(--f-body);
+  font-size: 15px;
+  color: var(--fg-2);
+  max-width: 52ch;
+  margin: 0;
+}
+
+/* =============================================================
+   SECTION 02 — LISTEN (BOOE)
+   ============================================================= */
+.listen {
+  display: grid;
+  grid-template-columns: minmax(320px, 480px) 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+@media (max-width: 900px) { .listen { grid-template-columns: 1fr; } }
+
+.listen__cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--void-3);
+  overflow: hidden;
+  box-shadow:
+    8px 8px 0 0 var(--pink),
+    0 0 0 1px var(--hairline-strong),
+    0 24px 60px -16px rgba(0,0,0,0.7);
+}
+.listen__cover img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.listen__cover-meta {
+  margin-top: 22px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.listen__cover-meta .gold { color: var(--yellow); }
+.listen__content {
+  display: flex; flex-direction: column;
+  gap: clamp(24px, 3vw, 36px);
+}
+.listen__lede {
+  font-family: var(--f-body);
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.55;
+  color: var(--fg);
+  margin: 0;
+  max-width: 52ch;
+  font-weight: 400;
+}
+.listen__embed {
+  padding: 26px 28px 28px;
+  background: var(--void-3);
+  border: 1px solid var(--hairline-gold);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.listen__embed .label {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--yellow);
+}
+.listen__embed .title {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: clamp(28px, 2.6vw, 40px);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  margin: 12px 0 6px;
+}
+.listen__embed .sub {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.listen__embed .cursor {
+  display: inline-block;
+  width: 0.55ch;
+  height: 1em;
+  background: var(--yellow);
+  vertical-align: -0.15em;
+  margin-left: 4px;
+  animation: blink 1.4s steps(2) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+.platforms {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  max-width: 440px;
+}
+.platform {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px;
+  padding: 18px 22px;
+  border: 1px solid var(--hairline-gold);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  background: transparent;
+  transition: border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease);
+}
+.platform:hover {
+  background: var(--yellow-tint);
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+.platform--primary {
+  background: var(--yellow);
+  color: var(--void);
+  border-color: var(--yellow);
+}
+.platform--primary:hover {
+  background: var(--yellow-hover);
+  color: var(--void);
+  border-color: var(--yellow-hover);
+}
+.platform .arr-ico {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  transition: transform var(--dur) var(--ease);
+}
+.platform:hover .arr-ico { transform: translateX(4px); }
+
+/* Episode placeholder grid */
+.episodes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+@media (max-width: 700px) { .episodes { grid-template-columns: 1fr; } }
+.episode-ph {
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
+  padding: 18px;
+  border: 1px dashed var(--hairline-strong);
+  background:
+    repeating-linear-gradient(135deg, rgba(200,169,110,0.03) 0 10px, transparent 10px 20px);
+}
+.episode-ph .ep-num {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--fg-muted);
+}
+.episode-ph .ep-title {
+  font-family: var(--f-display);
+  font-size: 22px;
+  color: var(--fg-2);
+  line-height: 1;
+}
+.episode-ph .ep-status {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+/* Watch — three kinds of motion content. Tab chips filter the rail
+   below. Each kind carries its own accent color (yellow / violet /
+   green) so the section visibly shifts as the user toggles. */
+.watch-kinds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+.watch-kind {
+  /* Per-tab accent — overridden by the .watch-kind--{kind} modifier. */
+  --wk-rgb: 255,224,0;
+  --wk-hex: #FFE000;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: transparent;
+  border: 1px solid var(--hairline-strong);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease);
+}
+.watch-kind--deep-dives { --wk-rgb: 255,224,0;  --wk-hex: #FFE000; }
+.watch-kind--verticals  { --wk-rgb: 167,139,250; --wk-hex: #A78BFA; }
+.watch-kind--statics    { --wk-rgb: 74,222,128;  --wk-hex: #4ADE80; }
+.watch-kind:hover {
+  border-color: var(--wk-hex);
+  color: var(--wk-hex);
+}
+.watch-kind.is-active {
+  border-color: var(--wk-hex);
+  color: var(--wk-hex);
+  background: rgba(var(--wk-rgb), 0.08);
+  cursor: default;
+}
+.watch-kind .dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--wk-hex);
+  box-shadow: 0 0 8px var(--wk-hex);
+}
+.watch-kind__fmt {
+  /* Format suffix — same line, dimmer + slightly smaller so the
+     primary label leads. */
+  color: var(--fg-muted);
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  margin-left: 4px;
+}
+.watch-kind:hover .watch-kind__fmt,
+.watch-kind.is-active .watch-kind__fmt {
+  color: rgba(var(--wk-rgb), 0.7);
+}
+
+/* =============================================================
+   SECTION 03 — WATCH (rails + cards)
+   ============================================================= */
+.watch-panel { display: none; }
+.watch-panel.is-active { display: block; animation: watch-fade 0.32s ease both; }
+@keyframes watch-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.watch-panel--deep-dives { --vc-rgb: 255,224,0;  --vc-hex: #FFE000; }
+.watch-panel--verticals  { --vc-rgb: 167,139,250; --vc-hex: #A78BFA; }
+.watch-panel--statics    { --vc-rgb: 74,222,128;  --vc-hex: #4ADE80; }
+
+.watch-rail {
+  /* Same scroll-snap recipe as the Parts rails so all carousels on
+     the site behave identically. */
+  display: flex;
+  gap: clamp(12px, 1.4vw, 20px);
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 0 26px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline-strong) transparent;
+}
+.watch-rail::-webkit-scrollbar { height: 6px; }
+.watch-rail::-webkit-scrollbar-track { background: transparent; }
+.watch-rail::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: 3px; }
+.watch-rail .video-card {
+  flex: 0 0 auto;
+  width: clamp(240px, 26vw, 340px);
+  scroll-snap-align: start;
+}
+.watch-rail .video-card--vertical {
+  width: clamp(150px, 15vw, 200px);
+  aspect-ratio: 9 / 16;
+}
+
+.video-card {
+  /* Per-card accent inherits from the parent .watch-panel--{kind} so
+     toggling tabs recolors every element — numbers, status pills,
+     play button, hover glow. */
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background:
+    radial-gradient(ellipse at center, #1a1a1a 0%, #050505 80%),
+    var(--void-3);
+  border: 1px solid var(--hairline);
+  padding: 18px;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  transition: border-color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              transform var(--dur) var(--ease);
+  text-decoration: none;
+  color: var(--fg);
+}
+.video-card:hover {
+  border-color: var(--vc-hex);
+  background:
+    linear-gradient(rgba(var(--vc-rgb),0.10), rgba(var(--vc-rgb),0.10)),
+    radial-gradient(ellipse at center, #1a1a1a 0%, #050505 80%),
+    var(--void-4);
+  box-shadow:
+    0 0 0 1px rgba(var(--vc-rgb),0.40),
+    0 26px 64px -16px rgba(var(--vc-rgb),0.50);
+  transform: translateY(-3px) scale(1.012);
+}
+.video-card:hover .video-card__play { opacity: 1; transform: scale(1); }
+
+.video-card__top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+.video-card__num { color: var(--vc-hex); }
+.video-card__status { color: var(--fg-muted); }
+.video-card__bottom {
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.video-card__title {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: clamp(16px, 1.4vw, 20px);
+  line-height: 1;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--fg);
+  margin: 0;
+}
+.video-card__dur {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--fg-muted);
+}
+.video-card__play {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.92);
+  background: rgba(10,10,10,0.45);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.video-card__play span {
+  width: 64px; height: 64px;
+  background: var(--vc-hex);
+  color: var(--void);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  padding-left: 4px;
+}
+
+.video-card--pending {
+  border-style: dashed;
+  background:
+    repeating-linear-gradient(135deg, rgba(200,169,110,0.03) 0 10px, transparent 10px 20px),
+    var(--void-3);
+}
+.video-card--pending .video-card__num { color: var(--fg-muted); }
+.video-card--pending .video-card__title { color: var(--fg-muted); }
+.video-card--pending .video-card__status { color: var(--vc-hex); }
+
+.watch-footer {
+  margin-top: clamp(40px, 5vw, 72px);
+  display: flex; justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.watch-footer a { color: var(--gold); }
+
+/* =============================================================
+   SECTION 04 — EXPLORE (the 20 Parts: 143 Fractures + 50 Collapses)
+   =============================================================
+   Architecture:
+   - Parts I–XII (the arc)        → cyan accent, public, expandable
+   - Parts XIII–XX (the Collapses) → pink accent, gated, titles redacted
+   The accent color is carried per-arc on each card via --arc-rgb/--arc-hex
+   so the same .part component handles both states. */
+
+.explore-arc {
+  margin-top: clamp(28px, 3vw, 44px);
+}
+.explore-arc + .explore-arc { margin-top: clamp(48px, 6vw, 88px); }
+
+.explore-arc__head {
+  display: flex; align-items: baseline; gap: 18px;
+  flex-wrap: wrap;
+  padding-bottom: 18px;
+  margin-bottom: clamp(20px, 2.4vw, 32px);
+  border-bottom: 1px solid var(--hairline);
+}
+.explore-arc__num {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: clamp(28px, 3vw, 44px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.explore-arc__label {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.explore-arc__count {
+  margin-left: auto;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.explore-arc__count .hint {
+  color: var(--arc-hex, var(--signal-cyan));
+  margin-left: 8px;
+}
+.explore-arc--free     { --arc-rgb: 0,194,199;  --arc-hex: #00C2C7; }
+.explore-arc--collapse { --arc-rgb: 255,45,111; --arc-hex: #FF2D6F; }
+
+.parts {
+  /* Horizontal scroll-snap rail. Smaller cards so 5-ish fit on desktop,
+     1.5-2 on mobile, which gives a clear "there's more →" affordance
+     without forcing a 4-column wall of 2:3 portraits. Vertical padding
+     leaves room for the hover lift/scale without clipping. */
+  display: flex;
+  gap: clamp(12px, 1.2vw, 18px);
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 0 26px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline-strong) transparent;
+}
+.parts::-webkit-scrollbar { height: 6px; }
+.parts::-webkit-scrollbar-track { background: transparent; }
+.parts::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: 3px; }
+
+.part {
+  /* Per-arc accent inherits from .explore-arc but can be overridden
+     per-card if a single Part ever needs its own color. */
+  --arc-rgb: 0,194,199;
+  --arc-hex: #00C2C7;
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(140px, 16vw, 200px);
+  scroll-snap-align: start;
+  background: var(--void);
+  border: 1px solid var(--hairline);
+  display: flex; flex-direction: column;
+  text-decoration: none;
+  color: var(--fg);
+  transition: border-color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              transform var(--dur) var(--ease);
+  cursor: pointer;
+}
+.explore-arc--collapse .part {
+  --arc-rgb: 255,45,111;
+  --arc-hex: #FF2D6F;
+}
+
+.part__cover {
+  position: relative;
+  aspect-ratio: 441 / 666;   /* matches the Part page art proportion */
+  background: #000;
+  overflow: hidden;
+}
+.part__cover img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Hairline frame inset so the card edge reads as a printed page edge */
+.part__cover::after {
+  content: "";
+  position: absolute; inset: 0;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+  pointer-events: none;
+}
+
+.part__meta {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.part__meta-count { color: var(--arc-hex); }
+.part__meta-cta {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--fg-2);
+  transition: color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.part:hover {
+  border-color: var(--arc-hex);
+  background:
+    linear-gradient(rgba(var(--arc-rgb),0.10), rgba(var(--arc-rgb),0.10)),
+    var(--void-4);
+  box-shadow:
+    0 0 0 1px rgba(var(--arc-rgb),0.40),
+    0 26px 64px -16px rgba(var(--arc-rgb),0.55);
+  transform: translateY(-3px) scale(1.015);
+}
+.part:hover .part__meta-cta { color: var(--arc-hex); }
+.part:hover .part__meta-cta .arr { transform: translateX(3px); }
+.part .arr { display: inline-block; transition: transform var(--dur-fast) var(--ease); }
+
+/* -------- Locked Part card --------
+   The locked-state cover uses the real Part XIII–XX page art behind a
+   heavy blur + dark veil + pink wash. Number stays legible up top
+   ("PART XIII"), title gets dissolved into pink fog by the blur, lock
+   glyph sits dead-centre. Removing `part--locked` and the blur class
+   reveals the cover when the gate is passed. */
+.part--locked { cursor: pointer; }
+.part--locked .part__cover {
+  background: var(--void);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: space-between;
+  padding: clamp(18px, 2.2vw, 28px) clamp(14px, 1.6vw, 20px);
+  filter: none;
+  position: relative;
+  overflow: hidden;
+}
+.part__cover-blur {
+  position: absolute;
+  inset: -18%;
+  width: 136%; height: 136%;
+  object-fit: cover;
+  filter: blur(16px) saturate(0.85) brightness(0.55);
+  z-index: 0;
+  pointer-events: none;
+}
+.part__cover-veil {
+  position: absolute; inset: 0; z-index: 1;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(var(--arc-rgb),0.18) 0%, rgba(0,0,0,0) 60%),
+    linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.75) 100%);
+  pointer-events: none;
+}
+.part--locked .part__locked-eyebrow,
+.part--locked .part__locked-glyph,
+.part--locked .part__locked-tag { position: relative; z-index: 2; }
+.part--locked .part__locked-eyebrow {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: clamp(15px, 1.3vw, 20px);
+  letter-spacing: 0.02em;
+  color: var(--fg);
+  text-align: center;
+  line-height: 1.05;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+}
+.part--locked .part__locked-eyebrow .dim { color: var(--fg-muted); font-weight: 400; }
+.part--locked .part__locked-glyph {
+  width: clamp(32px, 4vw, 48px);
+  height: clamp(32px, 4vw, 48px);
+  display: grid; place-items: center;
+  border: 1px solid rgba(var(--arc-rgb), 0.55);
+  border-radius: 50%;
+  color: rgba(var(--arc-rgb), 0.85);
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+.part--locked .part__locked-glyph svg { width: 56%; height: 56%; }
+.part--locked .part__locked-tag {
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--fg);
+  text-align: center;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+}
+.part--locked:hover .part__locked-glyph {
+  color: var(--arc-hex);
+  border-color: var(--arc-hex);
+  box-shadow: 0 0 18px -2px rgba(var(--arc-rgb), 0.7);
+}
+
+/* -------- Arc intro slab (Fractures / Collapse) --------
+   Live-type chapter break that sits between the two arcs of the
+   Explore section. Same shape and rhythm; accent color picks up
+   from the arc that follows it (cyan = Fractures, pink = Collapse). */
+.arc-banner {
+  margin: clamp(20px, 2.4vw, 36px) 0;
+  border: 1px solid var(--hairline);
+  /* Centered radial bloom behind the wordmark — wide ellipse so the
+     glow concentrates on the type and fades out before the banner
+     edges. Accent comes from --ab-rgb so each banner illuminates in
+     its own arc color (cyan / pink). */
+  background:
+    radial-gradient(ellipse 55% 130% at center,
+      rgba(var(--ab-rgb), 0.32) 0%,
+      rgba(var(--ab-rgb), 0.14) 28%,
+      rgba(var(--ab-rgb), 0.04) 58%,
+      rgba(0,0,0,0) 82%),
+    #000;
+  aspect-ratio: 16 / 4.5;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.arc-banner--fractures { --ab-rgb: 0,194,199;  --ab-hex: #00C2C7; }
+.arc-banner--collapse  { --ab-rgb: 255,45,111; --ab-hex: #FF2D6F; }
+/* (outline removed per direction — the bloom carries the chrome) */
+.arc-banner__text {
+  display: flex; align-items: center;
+  gap: clamp(18px, 3vw, 48px);
+  font-family: var(--f-head);
+  font-weight: 700;
+  color: var(--ab-hex);
+  font-size: clamp(40px, 8.4vw, 104px);
+  line-height: 1;
+  letter-spacing: 0.015em;
+  text-shadow: 0 0 32px rgba(var(--ab-rgb), 0.20);
+}
+.arc-banner__text .bul {
+  font-size: 0.6em;
+  transform: translateY(-0.12em);
+  opacity: 0.92;
+}
+@media (max-width: 700px) {
+  .arc-banner { aspect-ratio: 5 / 3; }
+}
+
+/* -------- The Gate (Parts XIII–XX magic-link unlock) --------
+   Three UI states, switched via the .gate's data-gate-state attr:
+     locked   → email form (default for new visitors)
+     pending  → "// Link sent." confirmation, cards stay locked
+     unlocked → single confirmation line, cards reveal
+     error    → form returns with a red eyebrow above
+   The container holds a min-height so submitting the form does
+   NOT cause the page to reflow under the cards. */
+.gate {
+  margin-top: clamp(40px, 5vw, 72px);
+  margin-bottom: clamp(36px, 4.5vw, 64px);
+  border: 1px solid var(--hairline);
+  background:
+    linear-gradient(180deg, rgba(255,45,111,0.04) 0%, rgba(255,45,111,0) 50%),
+    var(--void-3);
+  padding: clamp(28px, 4vw, 56px) clamp(24px, 4vw, 56px);
+  position: relative;
+  overflow: hidden;
+  min-height: 240px;
+  display: grid;
+  align-items: center;
+}
+/* Pink hairline along the top edge — telegraphs "belongs to the
+   Collapse arc" without a heavy border treatment. */
+.gate::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    rgba(255,45,111,0) 0%,
+    rgba(255,45,111,0.55) 50%,
+    rgba(255,45,111,0) 100%);
+}
+
+/* Each state lives as a sibling under .gate; the parent's
+   data-gate-state attr picks which one renders. */
+.gate__state { display: none; width: 100%; }
+.gate[data-gate-state="locked"]   .gate__state--locked   { display: block; }
+.gate[data-gate-state="pending"]  .gate__state--pending  { display: block; }
+.gate[data-gate-state="unlocked"] .gate__state--unlocked { display: block; }
+.gate[data-gate-state="error"]    .gate__state--error    { display: block; }
+
+/* When unlocked the gate shrinks — the cards do the visual work. */
+.gate[data-gate-state="unlocked"] {
+  min-height: 0;
+  padding: clamp(20px, 2.4vw, 32px) clamp(24px, 4vw, 56px);
+  background: var(--void-3);
+}
+.gate[data-gate-state="unlocked"]::before {
+  background: linear-gradient(90deg,
+    rgba(74,222,128,0) 0%,
+    rgba(74,222,128,0.45) 50%,
+    rgba(74,222,128,0) 100%);
+}
+
+/* -------- Shared building blocks across states -------- */
+.gate__line {
+  font-family: var(--f-mono);
+  font-size: clamp(12px, 1.05vw, 14px);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  line-height: 1.55;
+  margin: 0;
+}
+.gate__line .slash { color: var(--pink); margin-right: 8px; font-weight: 500; }
+
+.gate__body {
+  font-family: var(--f-body);
+  font-size: clamp(15px, 1.25vw, 18px);
+  line-height: 1.55;
+  color: var(--fg-2);
+  margin: 12px 0 0;
+  max-width: 56ch;
+}
+.gate__body strong { color: var(--fg); font-weight: 500; }
+
+/* -------- STATE 1 · Locked + Error (form) -------- */
+.gate__state--locked .gate__intro,
+.gate__state--error  .gate__intro {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: clamp(22px, 2.6vw, 32px);
+  max-width: 64ch;
+}
+.gate__error {
+  font-family: var(--f-mono);
+  font-size: clamp(12px, 1.05vw, 14px);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--signal-red);
+  margin: 0 0 6px;
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+}
+.gate__error::before { content: "//"; color: var(--signal-red); font-weight: 500; }
+.gate__error-detail {
+  font-family: var(--f-body);
+  font-size: clamp(14px, 1.15vw, 17px);
+  color: var(--fg-2);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.gate__form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: stretch;
+  max-width: 680px;
+}
+@media (max-width: 640px) { .gate__form { grid-template-columns: 1fr; } }
+
+.gate__field {
+  position: relative;
+  display: flex; align-items: stretch;
+  background: var(--void);
+  border: 1px solid var(--hairline-strong);
+  transition: border-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+.gate__field:focus-within {
+  /* Gold focus per brief — distinct from the pink button so the two
+     states ("typing" vs "committing") stay legible. */
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px rgba(200,169,110,0.5),
+              0 0 24px -6px rgba(200,169,110,0.45);
+}
+.gate__field-marker {
+  display: flex; align-items: center;
+  padding: 0 0 0 16px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--pink);
+  font-weight: 500;
+}
+.gate__field input {
+  flex: 1; min-width: 0;
+  background: transparent;
+  border: 0; outline: 0;
+  color: var(--fg);
+  font-family: var(--f-mono);
+  font-size: clamp(13px, 1vw, 15px);
+  letter-spacing: 0.06em;
+  padding: 18px 18px;
+}
+.gate__field input::placeholder {
+  color: var(--fg-muted);
+  letter-spacing: 0.06em;
+  text-transform: none;
+}
+.gate__submit {
+  background: var(--pink);
+  color: var(--fg);
+  border: 0;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 0 26px;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 10px;
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+.gate__submit:hover {
+  background: var(--pink-hover);
+  box-shadow: 0 14px 36px -8px rgba(255,45,111,0.55);
+}
+.gate__submit .arr { display: inline-block; transition: transform var(--dur) var(--ease); }
+.gate__submit:hover .arr { transform: translateX(4px); }
+
+.gate__note {
+  margin-top: clamp(18px, 2vw, 24px);
+  font-family: var(--f-mono);
+  font-size: clamp(10px, 0.85vw, 12px);
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--fg-muted);
+}
+.gate__note .slash { color: var(--fg-muted); margin-right: 8px; }
+.gate__note .sep { color: var(--fg-line); margin: 0 10px; }
+/* Small secondary CTA inside the note — for visitors without the book.
+   Sits on the same line as the privacy note, separated by a hairline. */
+.gate__alt {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-left: 14px;
+  padding-left: 14px;
+  border-left: 1px solid var(--hairline-strong);
+  color: var(--fg-muted);
+  text-transform: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+.gate__alt strong {
+  color: var(--pink);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.gate__alt:hover { color: var(--fg-2); }
+.gate__alt:hover strong { color: var(--pink-hover); }
+.gate__alt .arr { display: inline-block; transition: transform var(--dur) var(--ease); }
+.gate__alt:hover .arr { transform: translateX(3px); }
+@media (max-width: 640px) {
+  .gate__alt {
+    display: flex;
+    margin: 12px 0 0;
+    padding: 12px 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--hairline-strong);
+  }
+}
+
+/* -------- STATE 2 · Pending -------- */
+.gate__pending-head {
+  font-family: var(--f-mono);
+  font-size: clamp(13px, 1.1vw, 15px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin: 0 0 18px;
+  display: flex; align-items: center; gap: 14px;
+}
+.gate__pending-head::before { content: "//"; font-weight: 500; }
+.gate__pending-head .pulse {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 12px var(--yellow);
+  animation: gate-blink 1.6s steps(2) infinite;
+}
+@keyframes gate-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.15; }
+}
+.gate__pending-body {
+  font-family: var(--f-body);
+  font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.5;
+  color: var(--fg);
+  margin: 0 0 6px;
+  max-width: 52ch;
+}
+.gate__pending-detail {
+  font-family: var(--f-body);
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.55;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: 52ch;
+}
+.gate__resend {
+  margin-top: clamp(20px, 2.6vw, 32px);
+  background: transparent;
+  border: 0;
+  color: var(--fg-muted);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0 0 4px;
+  display: inline-flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--hairline-strong);
+  transition: color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.gate__resend::before {
+  content: "\21BB";
+  font-family: var(--f-body);
+  font-size: 14px;
+  opacity: 0.7;
+}
+.gate__resend:hover { color: var(--fg-2); border-color: var(--fg-2); }
+.gate__resend:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* -------- STATE 3 · Unlocked -------- */
+.gate__unlocked-line {
+  font-family: var(--f-mono);
+  font-size: clamp(14px, 1.25vw, 17px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin: 0;
+  display: flex; align-items: center; gap: 14px;
+  font-weight: 500;
+}
+.gate__unlocked-line::before { content: "//"; font-weight: 500; }
+.gate__unlocked-line .pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--signal-green);
+  box-shadow: 0 0 12px var(--signal-green);
+}
+
+/* -------- Card reveal on unlock --------
+   When the gate validates, the JS adds .parts--unlocked to the grid.
+   The same .part--locked DOM stays in place; we just remove the blur,
+   veil, and lock chrome so the underlying cover art reveals. Titles
+   stay redacted (released by Bodhi later, per brief). */
+.part__cover-blur,
+.part__cover-veil { transition: filter 600ms var(--ease), opacity 600ms var(--ease); }
+.part--locked .part__locked-glyph,
+.part--locked .part__locked-tag { transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
+.parts--unlocked .part--locked .part__cover-blur { filter: blur(0) saturate(1.05) brightness(1); }
+.parts--unlocked .part--locked .part__cover-veil { opacity: 0; }
+.parts--unlocked .part--locked .part__locked-glyph,
+.parts--unlocked .part--locked .part__locked-tag {
+  opacity: 0;
+  transform: scale(0.85);
+  pointer-events: none;
+}
+.parts--unlocked .part--locked .part__locked-eyebrow {
+  text-shadow: 0 1px 12px rgba(0,0,0,0.95);
+}
+.parts--unlocked .part--locked { border-color: rgba(255,45,111,0.30); }
+.parts--unlocked .part--locked .part__meta-cta { color: var(--pink); }
+/* Swap the "KEY REQUIRED" CTA label for "OPEN PART" once unlocked. */
+.parts--unlocked .part--locked .part__meta-cta-text { font-size: 0; }
+.parts--unlocked .part--locked .part__meta-cta-text::before {
+  content: "OPEN PART";
+  font-size: 10px;
+  letter-spacing: 0.26em;
+}
+
+/* Header copy on the arc head — swap "LOCKED" for "OPEN" once unlocked. */
+.explore-arc__count-unlocked { display: none; }
+[data-gate-state="unlocked"] ~ * .explore-arc__count-locked,
+#collapses.is-unlocked .explore-arc__count-locked { display: none; }
+#collapses.is-unlocked .explore-arc__count-unlocked { display: inline; }
+
+/* =============================================================
+   SECTION 05 — GLOSSARY
+   =============================================================
+   Bucket-filtered carousel of core terms. Pulls from window.GLOSSARY.
+
+   Visual system:
+     - Accent: azure (#4D8AFF) — distinct from Fractures cyan and
+       Collapse pink so the section reads as its own arc.
+     - Bucket filter: pill buttons (same family as the Watch tabs)
+       so filters look unambiguously clickable.
+     - Cards live in a single horizontal scroll rail; selecting a
+       bucket pill filters which cards remain in the rail.
+   ============================================================= */
+:root {
+  /* Glossary accent — reused for `.term-card` hover, active pill,
+     bucket eyebrow on cards, and the inline-search focus glow. */
+  --azure:      #4D8AFF;
+  --azure-rgb:  77,138,255;
+  --azure-d:    #2D6FE5;
+  --azure-tint: rgba(77,138,255,0.10);
+}
+
+.glossary {
+  display: grid;
+  /* CRITICAL: min-width:0 on the implicit column so the inner rail
+     (overflow-x:auto) can actually constrain to the container.
+     Without minmax(0,1fr) the grid track stretches to scrollWidth
+     and the rail never becomes scrollable. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(28px, 3.4vw, 44px);
+}
+
+/* -------- Top controls: inline search + pill tab row -------- */
+.glossary__controls {
+  display: grid;
+  gap: clamp(20px, 2.4vw, 28px);
+}
+
+.glossary__inline-search {
+  display: flex; align-items: stretch;
+  background: var(--void);
+  border: 1px solid var(--hairline-strong);
+  max-width: 560px;
+  transition: border-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+.glossary__inline-search:focus-within {
+  border-color: var(--azure);
+  box-shadow: 0 0 0 1px rgba(var(--azure-rgb),0.45),
+              0 0 24px -6px rgba(var(--azure-rgb),0.45);
+}
+.glossary__inline-search-prompt {
+  display: flex; align-items: center;
+  padding: 0 0 0 16px;
+  font-family: var(--f-mono);
+  font-size: 14px;
+  color: var(--azure);
+  font-weight: 500;
+}
+.glossary__inline-search input {
+  flex: 1; min-width: 0;
+  background: transparent;
+  border: 0; outline: 0;
+  color: var(--fg);
+  font-family: var(--f-mono);
+  font-size: 15px;
+  letter-spacing: 0.03em;
+  padding: 16px 16px;
+}
+.glossary__inline-search input::placeholder {
+  color: var(--fg-muted);
+  letter-spacing: 0.03em;
+  text-transform: none;
+}
+.glossary__inline-search-clear {
+  background: transparent;
+  border: 0;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding: 0 18px;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
+}
+.glossary__inline-search-clear:hover { color: var(--fg-2); }
+
+/* -------- Bucket pills (filter chips) --------
+   Modeled on .watch-kind so the visual language matches the rest of
+   the site. Bigger, more obviously tappable than the previous text-
+   only tabs. Wrap by default; on narrow screens horizontally scroll. */
+.glossary__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 4px 0;
+}
+.glossary__tab {
+  /* Each pill */
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  background: transparent;
+  border: 1px solid var(--hairline-strong);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease);
+}
+.glossary__tab .num {
+  color: var(--fg-muted);
+  font-size: 10.5px;
+  margin-right: 2px;
+  transition: color var(--dur-fast) var(--ease);
+}
+.glossary__tab .count {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  padding-left: 10px;
+  margin-left: 4px;
+  border-left: 1px solid var(--hairline);
+  transition: color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.glossary__tab:hover {
+  border-color: var(--azure);
+  color: var(--azure);
+}
+.glossary__tab:hover .num,
+.glossary__tab:hover .count { color: var(--azure); border-color: rgba(var(--azure-rgb),0.4); }
+.glossary__tab.is-active {
+  background: var(--azure);
+  border-color: var(--azure);
+  color: var(--void);
+  cursor: default;
+}
+.glossary__tab.is-active .num,
+.glossary__tab.is-active .count { color: rgba(10,10,10,0.7); border-color: rgba(10,10,10,0.18); }
+
+/* On very narrow screens, switch from wrap to a horizontal scroll
+   rail so pills don't crush. */
+@media (max-width: 640px) {
+  .glossary__tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-bottom: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--hairline-strong) transparent;
+  }
+  .glossary__tabs::-webkit-scrollbar { height: 4px; }
+  .glossary__tab { flex-shrink: 0; }
+}
+
+/* Live meta row. Sits between the pills and the carousel as a thin
+   caption — "showing X of 58 terms · filter · bucket name". */
+.glossary__meta {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  flex-wrap: wrap;
+  padding-top: 6px;
+  border-top: 1px solid var(--hairline);
+}
+.glossary__meta .slash { color: var(--azure); margin-right: 8px; }
+.glossary__meta b { color: var(--azure); font-weight: 500; }
+
+/* -------- TERM CAROUSEL --------
+   Single horizontal scroll-snap rail. Same recipe as .parts /
+   .watch-rail so all carousels behave the same way (drag/scroll on
+   trackpad, snaps on touch, thin scrollbar). */
+.glossary__rail-wrap {
+  position: relative;
+  min-width: 0;
+}
+.glossary__rail {
+  display: flex;
+  gap: clamp(12px, 1.2vw, 18px);
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 0 26px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline-strong) transparent;
+  scroll-behavior: smooth;
+}
+.glossary__rail::-webkit-scrollbar { height: 6px; }
+.glossary__rail::-webkit-scrollbar-track { background: transparent; }
+.glossary__rail::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: 3px; }
+
+/* Carousel arrow buttons — visible nudge to scroll the rail. Hide
+   when there's nothing to scroll to in that direction (JS toggles
+   the `is-disabled` class). */
+.glossary__rail-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(10,10,10,0.78);
+  border: 1px solid var(--hairline-strong);
+  color: var(--fg-2);
+  cursor: pointer;
+  z-index: 2;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              opacity var(--dur-fast) var(--ease);
+}
+.glossary__rail-arrow:hover {
+  border-color: var(--azure);
+  color: var(--azure);
+}
+.glossary__rail-arrow.is-disabled {
+  opacity: 0.25;
+  pointer-events: none;
+}
+.glossary__rail-arrow--prev { left: -8px; }
+.glossary__rail-arrow--next { right: -8px; }
+.glossary__rail-arrow svg { width: 18px; height: 18px; }
+@media (max-width: 720px) {
+  .glossary__rail-arrow { display: none; }
+}
+
+/* -------- TERM CARD --------
+   Bigger than before. Reads as a "card" in the same family as edit-
+   ion / video-card / part — accent color is the only thing that
+   differs. */
+.term-card {
+  --tc-rgb: var(--azure-rgb);
+  --tc-hex: var(--azure);
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(220px, 22vw, 280px);
+  scroll-snap-align: start;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 22px 24px;
+  background: var(--void-3);
+  border: 1px solid var(--hairline);
+  text-decoration: none;
+  color: inherit;
+  min-height: 150px;
+  transition: border-color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              transform var(--dur) var(--ease);
+}
+.term-card:hover {
+  border-color: var(--tc-hex);
+  background:
+    linear-gradient(rgba(var(--tc-rgb),0.08), rgba(var(--tc-rgb),0.08)),
+    var(--void-4);
+  box-shadow:
+    0 0 0 1px rgba(var(--tc-rgb),0.30),
+    0 22px 56px -16px rgba(var(--tc-rgb),0.45);
+  transform: translateY(-3px) scale(1.01);
+}
+.term-card__bucket {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--tc-hex);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.term-card__name {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: clamp(18px, 1.7vw, 22px);
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  color: var(--fg);
+  margin: 0;
+  line-height: 1.1;
+}
+.term-card__name mark {
+  background: rgba(var(--azure-rgb), 0.25);
+  color: var(--azure);
+  padding: 0 2px;
+}
+.term-card__snip {
+  font-family: var(--f-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+  margin: auto 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.term-card__arr {
+  position: absolute;
+  right: 18px; bottom: 18px;
+  width: 16px; height: 16px;
+  color: var(--fg-line);
+  transition: color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.term-card:hover .term-card__arr {
+  color: var(--tc-hex);
+  transform: translate(2px, -2px);
+}
+
+/* Hidden cards (filter result). The rail uses display:flex so
+   `hidden` cards must drop out of layout completely or they leave
+   gaps. */
+.term-card[hidden] { display: none !important; }
+
+/* "No results" fallback */
+.glossary__empty {
+  display: none;
+  padding: 36px 22px;
+  border: 1px dashed var(--hairline-strong);
+  background:
+    repeating-linear-gradient(135deg, rgba(var(--azure-rgb),0.035) 0 10px, transparent 10px 20px),
+    var(--void-3);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  text-align: center;
+}
+.glossary__empty .slash { color: var(--azure); margin-right: 10px; }
+.glossary.is-empty .glossary__empty { display: block; }
+.glossary.is-empty .glossary__rail-wrap { display: none; }
+
+/* The home page glossary uses violet accents; the .term-card style
+   is also reused on the per-term-page "Also in this bucket" row so
+   the visual vocabulary stays consistent there too. */
+
+/* =============================================================
+   SECTION 06 — ABOUT
+   ============================================================= */
+.about {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(40px, 7vw, 120px);
+  margin-bottom: clamp(64px, 8vw, 120px);
+}
+@media (max-width: 900px) { .about { grid-template-columns: 1fr; } }
+.about__mark {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  margin: 0 0 24px;
+  /* isolation lets the chrome aura sit behind the image without bleeding
+     into the rest of the section's stacking context. */
+  isolation: isolate;
+}
+/* Chrome aura — a soft, cool-toned halo behind the mark.
+   Two radial layers (tight specular + wide diffuse) plus a faint conic
+   sheen so the glow reads as polished metal, not a generic blur.
+   Pulses gently to suggest the mirror is alive. */
+.about__mark::before {
+  content: "";
+  position: absolute;
+  inset: -22%;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side,
+      rgba(235,240,250,0.55) 0%,
+      rgba(190,205,225,0.32) 28%,
+      rgba(150,170,195,0.18) 52%,
+      rgba(80,95,115,0.08) 72%,
+      rgba(0,0,0,0) 82%),
+    conic-gradient(from 210deg,
+      rgba(220,228,240,0.10),
+      rgba(255,255,255,0.18) 90deg,
+      rgba(140,160,185,0.08) 180deg,
+      rgba(255,255,255,0.14) 270deg,
+      rgba(220,228,240,0.10) 360deg);
+  filter: blur(28px);
+  pointer-events: none;
+  animation: mirror-breathe 6.5s ease-in-out infinite;
+  transform-origin: center;
+}
+/* Specular sweep — a thin diagonal band of light that periodically
+   travels across the image like sunlight catching polished glass.
+   Long pause between sweeps so it stays subtle, not flashy. */
+.about__mark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 38%,
+    rgba(255,255,255,0.0) 44%,
+    rgba(255,255,255,0.22) 50%,
+    rgba(220,232,248,0.08) 54%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size: 260% 260%;
+  background-position: -60% -60%;
+  mix-blend-mode: screen;
+  animation: mirror-sweep 7.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+.about__mark img {
+  position: relative;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  background: var(--void-3);
+  box-shadow:
+    0 0 0 1px rgba(220,230,245,0.22),
+    0 0 24px -2px rgba(210,220,235,0.20),
+    0 24px 60px -16px rgba(0,0,0,0.7);
+}
+
+@keyframes mirror-breathe {
+  0%, 100% { opacity: 0.82; transform: scale(0.985); }
+  50%      { opacity: 1;    transform: scale(1.035); }
+}
+@keyframes mirror-sweep {
+  0%   { background-position: -60% -60%; opacity: 0; }
+  8%   { opacity: 1; }
+  42%  { background-position: 160% 160%; opacity: 1; }
+  50%, 100% { background-position: 160% 160%; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about__mark::before { animation: none; }
+  .about__mark::after  { animation: none; opacity: 0; }
+}
+/* About — manifesto layout. The copy is the back-of-book author
+   statement; stanzas + triplet lists carry the rhythm from the
+   printed page into the screen. No contact info, no imprint copy:
+   MIRROR Publishing lives in the footer only. */
+.about__manifesto {
+  font-family: var(--f-body);
+  color: var(--fg);
+  max-width: 60ch;
+}
+.about__manifesto .stanza {
+  font-size: clamp(20px, 1.7vw, 24px);
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--fg);
+  margin: 0 0 clamp(22px, 2.2vw, 32px);
+  text-wrap: pretty;
+}
+.about__manifesto .stanza em {
+  font-style: normal;
+  color: var(--yellow);
+  letter-spacing: 0;
+}
+.about__manifesto .trio {
+  margin: clamp(-6px, -0.4vw, -10px) 0 clamp(22px, 2.2vw, 32px) 0;
+  padding-left: clamp(20px, 1.6vw, 28px);
+  display: flex; flex-direction: column;
+  gap: 8px;
+  font-family: var(--f-mono);
+  font-size: clamp(14px, 1.1vw, 16px);
+  letter-spacing: 0.04em;
+  color: var(--fg-2);
+  border-left: 1px solid var(--hairline-strong);
+}
+.about__manifesto .sig {
+  margin-top: clamp(20px, 2vw, 28px);
+  padding-top: 18px;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--f-mono);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: var(--fg-muted);
+  display: flex; align-items: center; gap: 12px;
+}
+.about__manifesto .sig::before {
+  content: "—";
+  color: var(--fg-muted);
+}
+/* Sign-off mark — plain readable [MIRRØR] in foreground white.
+   No chrome / gradient / fill-clip — at this scale the metallic
+   treatment renders as a smudge and the brand name disappears.
+   Kept as a standalone class so other sign-offs use the same look. */
+.sig__mark {
+  color: var(--fg);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.faq {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--hairline);
+  border: 1px solid var(--hairline);
+  margin-top: clamp(48px, 6vw, 80px);
+}
+@media (max-width: 800px) { .faq { grid-template-columns: 1fr; } }
+.faq__item {
+  background: var(--void);
+  padding: clamp(24px, 3vw, 36px);
+}
+.faq__q {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 14px;
+}
+.faq__a {
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--fg-2);
+  margin: 0;
+}
+
+/* =============================================================
+   FOOTER
+   ============================================================= */
+.footer {
+  border-top: 1px solid var(--hairline);
+  padding: clamp(72px, 8vw, 120px) 0 48px;
+  background: var(--void-2);
+  position: relative;
+}
+.footer__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: clamp(32px, 5vw, 80px);
+  margin-bottom: clamp(56px, 6vw, 88px);
+}
+@media (max-width: 900px) {
+  .footer__grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .footer__grid { grid-template-columns: 1fr; }
+}
+.footer__mark {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 0.92;
+  margin: 0 0 18px;
+  color: var(--fg);
+}
+.footer__byline {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.footer__byline .gold { color: var(--gold); }
+.footer__col-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 18px;
+}
+.footer__col ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.footer__col a {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.footer__col a:hover { color: var(--gold); }
+
+.footer__bottom {
+  display: flex; justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-top: 28px;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.footer__cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: var(--pink);
+  padding: 12px 18px;
+  transition: background var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+.footer__cta:hover {
+  background: var(--pink-hover);
+  color: var(--fg);
+  box-shadow: 0 0 0 1px var(--pink), 0 8px 24px -8px rgba(255,45,111,0.55);
+}
+.footer__cta .arr-ico { width: 14px; height: 14px; }
+.footer__social {
+  display: flex; gap: 12px;
+}
+.footer__social a {
+  width: 30px; height: 30px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--hairline-strong);
+  color: var(--fg-2);
+}
+.footer__social a:hover { border-color: var(--gold); color: var(--gold); }
+.footer__social svg { width: 14px; height: 14px; }
+
+/* =============================================================
+   REVEAL ON SCROLL
+   ============================================================= */
+/* Reveal: visible by default. JS opts elements into the pending
+   state (data-pending) before observing them, then removes it
+   when they enter the viewport. This guarantees content paints
+   even if a CSS transition never progresses. */
+[data-reveal] {
+  opacity: 1;
+  transform: none;
+  transition: opacity 800ms var(--ease), transform 800ms var(--ease);
+}
+[data-reveal][data-pending] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+[data-reveal][data-delay="1"] { transition-delay: 80ms; }
+[data-reveal][data-delay="2"] { transition-delay: 160ms; }
+[data-reveal][data-delay="3"] { transition-delay: 240ms; }
+</style>
 </head>
 <body>
 
-<!-- SCANLINE OVERLAY -->
-<div class="scanlines" aria-hidden="true"></div>
+<!-- Ambient layers (carry over from current site) -->
+<div class="scanlines"></div>
+<div class="interference"></div>
+<div class="grain"></div>
+<div class="vignette"></div>
 
-<!-- GLOBAL INTERFERENCE -->
-<div class="interference" id="interference" aria-hidden="true"></div>
-
-<!-- NOISE GRAIN -->
-<canvas id="grain" aria-hidden="true"></canvas>
-
-<!-- ═══════════════════════════════════════════
-     NAVIGATION
-     ═══════════════════════════════════════════ -->
-<nav class="nav" id="nav">
+<!-- ====== NAV + GLOBAL SEARCH ====== -->
+<nav class="nav">
   <div class="nav__inner">
-    <a href="#" class="nav__brand" data-glitch="THE BOOK OF ONENESS">THE BOOK OF ONENESS</a>
-    <button class="nav__toggle" id="navToggle" aria-label="Menu">
-      <span></span><span></span>
-    </button>
-    <div class="nav__links" id="navLinks">
-      <a href="#book">THE BOOK</a>
-      <a href="#about">ABOUT</a>
-    </div>
-    <a href="/get-the-book" class="nav__cta" target="_blank" rel="noopener">GET THE BOOK <svg width="24" height="24" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a class="nav__brand" href="#top" data-glitch="THE BOOK OF ONENESS">THE BOOK OF ONENESS</a>
+    <ul class="nav__links">
+      <li><a href="#the-book">The Book</a></li>
+      <li><a href="#listen">Listen</a></li>
+      <li><a href="#watch">Watch</a></li>
+      <li><a href="#explore">Explore</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <a class="nav__cta" href="/get-the-book">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════
-     HERO / ENTRY
-     ═══════════════════════════════════════════ -->
-<section class="hero" id="hero">
-  <div class="hero__bg">
-    <div class="hero__channel hero__channel--r" aria-hidden="true"></div>
-    <div class="hero__channel hero__channel--g" aria-hidden="true"></div>
-    <div class="hero__channel hero__channel--b" aria-hidden="true"></div>
-  </div>
+<!-- ====== FLOATING SOCIAL (fixed right) ====== -->
+<aside class="float-social" aria-label="Social channels">
+  <a href="https://youtube.com/@mirrortransmissions" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a>
+  <a href="https://tiktok.com/@mirrortransmissions" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 6.3a5.7 5.7 0 0 1-3.4-1.2 5.6 5.6 0 0 1-2.2-4H10v13.6a3 3 0 1 1-2.2-2.9V7.6A6.6 6.6 0 1 0 14 14.1V8.7a8.9 8.9 0 0 0 5.6 1.9V6.3z"/></svg></a>
+  <a href="https://instagram.com/mirrortransmissions" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+  <a href="https://facebook.com/mirrortransmissions" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3.2H13V8.8c0-.9.3-1.6 1.6-1.6h1.7V4.3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7v3.2h2.6V22H13z"/></svg></a>
+</aside>
 
-  <div class="hero__image" aria-hidden="true">
-    <img src="/img/THE%20BOOK%20OF%20ONENESS%20Book%20Cover%20Background%20Image.png" alt="" class="hero__image-src">
-    <div class="hero__image-overlay"></div>
-  </div>
+<!-- ====== HERO ====== -->
+<header class="hero" id="top" data-screen-label="00-hero">
+  <div class="hero__bg" aria-hidden="true"></div>
+  <div class="hero__scrim" aria-hidden="true"></div>
 
-  <div class="hero__content">
-    <div class="hero__text">
-      <p class="hero__fracture" data-glitch="You are not reading a book.">You are not reading a book.</p>
-      <h1 class="hero__title">
-        <span class="hero__title-line" data-delay="0">THE</span>
-        <span class="hero__title-line" data-delay="1">BOOK</span>
-        <span class="hero__title-line" data-delay="2">OF</span>
-        <span class="hero__title-line" data-delay="3">ONENESS</span>
+  <div class="hero__inner">
+    <div class="hero__top" data-reveal>
+      <span class="pulse"></span>
+      <span class="pulse-label">Available now</span>
+      <span class="hero__sep">/</span>
+      <span>Published 14.02.2026</span>
+      <span class="hero__sep">/</span>
+      <span>143 Fractures · 50 Collapses</span>
+    </div>
+
+    <div class="hero__center">
+      <div class="hero__eyebrow" data-reveal>/ A precision interruption</div>
+      <h1 class="hero__h1" data-reveal data-delay="1">
+        <span class="lf" data-glitch="THE BOOK">THE BOOK</span>
+        <span class="lf" data-glitch="OF ONENESS">OF ONENESS</span>
       </h1>
-      <p class="hero__sub">You are being unwritten.</p>
-      <div class="hero__cta">
-        <a href="/get-the-book" class="btn btn--primary" target="_blank" rel="noopener">
-          GET THE BOOK
-          <svg width="24" height="24" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <p class="hero__byline" data-reveal data-delay="2">
+        by <span class="brand-mirror"><span class="brk">[</span>MIRRØR<span class="brk">]</span></span>
+      </p>
+      <p class="hero__tagline" data-reveal data-delay="2">
+        A precision interruption. Not spirituality. Not self-help. A structural examination of how <span class="cap">THE MIND</span> constructs <span class="cap">THE STORY OF THE SELF</span>.
+      </p>
+      <div class="hero__ctas" data-reveal data-delay="3">
+        <a class="btn btn--pink" href="/get-the-book">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+        <a class="btn btn--ghost" href="#explore">EXPLORE THE FRACTURES <svg class="arr-ico arr-ico--down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 5 L12 19 M6 13 L12 19 L18 13"/></svg></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ====== / 01 — THE BOOK ====== -->
+<section class="section" id="the-book" data-screen-label="01-the-book">
+  <div class="container">
+
+    <header class="section__head">
+      <div data-reveal>
+        <div class="eyebrow">
+          <span class="slash">/</span><span class="num">01</span><span class="lbl">PUBLISHED</span>
+        </div>
+        <h2 class="section__title">THE BOOK</h2>
+        <p class="section__sub">One book. Five ways in. Same words, different rooms. Pick the one you'll actually finish. Or ask your local bookstore to order it for you.</p>
+      </div>
+    </header>
+
+    <!--
+      MASTER CTA · all GET THE BOOK affordances route to /get-the-book.
+      That page handles retailer routing under the hood — customer-facing
+      copy here stays plain. Do NOT route directly to Amazon / Bookshop /
+      B&N / IngramSpark from this page.
+    -->
+    <div class="master-cta" data-reveal>
+      <div class="master-cta__copy">
+        <div class="master-cta__label"><span class="status-dot"></span>Available now · worldwide</div>
+        <h3 class="master-cta__title">Get the book.</h3>
+        <p class="master-cta__sub">Tap below: we'll send you to your closest retailer. Or ask your local bookstore or library to order it in.</p>
+      </div>
+      <a class="btn btn--pink" href="/get-the-book">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+    </div>
+
+    <!-- Editions — two cards, equal weight, no hierarchy.
+         Day Paperback + Ebook. The full edition picker (Night editions,
+         Audiobook when ready, regional retailers) lives behind GET THE
+         BOOK — we don't position anything as premium vs not-premium. -->
+    <div class="editions" data-reveal>
+
+      <a class="edition edition--day" href="/get-the-book">
+        <div class="edition__cover">
+          <span class="edition__format edition__format--day">Paperback</span>
+          <img src="assets/cover-day-edition.jpg" alt="THE BOOK OF ONENESS — Day Edition paperback">
+        </div>
+        <div class="edition__body">
+          <div class="edition__num">// 01 · DAY EDITION</div>
+          <h4 class="edition__name">Day Edition</h4>
+          <div class="edition__price"><span class="currency">USD</span>$24.99</div>
+          <div class="edition__meta"><span>B&amp;W interior</span><span>Paperback</span></div>
+          <span class="edition__cta">GET IT <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></span>
+        </div>
+      </a>
+
+      <a class="edition edition--ebook" href="/get-the-book">
+        <div class="edition__cover">
+          <span class="edition__format edition__format--ebook">Ebook</span>
+          <img src="assets/cover-ebook-edition.jpg" alt="THE BOOK OF ONENESS — Ebook edition">
+        </div>
+        <div class="edition__body">
+          <div class="edition__num">// 02 · DIGITAL</div>
+          <h4 class="edition__name">Ebook</h4>
+          <div class="edition__price"><span class="currency">USD</span>$9.99</div>
+          <div class="edition__meta"><span>EPUB · Kindle</span><span>Instant</span></div>
+          <span class="edition__cta">GET IT <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></span>
+        </div>
+      </a>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ====== / 02 — LISTEN ====== -->
+<section class="section section--alt" id="listen" data-screen-label="02-listen">
+  <div class="container">
+
+    <header class="section__head">
+      <div data-reveal>
+        <div class="eyebrow">
+          <span class="slash">/</span><span class="num">02</span><span class="lbl">PODCAST</span>
+        </div>
+        <h2 class="section__title">LISTEN</h2>
+        <p class="section__sub">THE BOOK OF ONENESS Exposed. One episode per Fracture, heard in full, then taken apart.</p>
+      </div>
+    </header>
+
+    <div class="listen">
+      <div data-reveal>
+        <div class="listen__cover">
+          <img src="assets/booe-podcast-cover.png" alt="BOOK OF ONENESS EXPOSED — podcast cover">
+        </div>
+        <div class="listen__cover-meta">// <span class="gold">BOOE</span> · 143 episodes · season 01</div>
+      </div>
+
+      <div class="listen__content" data-reveal data-delay="1">
+        <p class="listen__lede">
+          Two voices examining the mechanics of one Fracture at a time. Released as the series unfolds.
+        </p>
+
+        <div class="listen__embed">
+          <span class="label">// 01 · BOOK OF ONENESS EXPOSED · FRACTURE 001</span>
+          <h4 class="title">Signal incoming<span class="cursor"></span></h4>
+          <span class="sub">// episode embed will live here · awaiting first transmission</span>
+        </div>
+
+        <div class="platforms">
+          <a class="platform platform--primary" href="#">FOLLOW ON SPOTIFY <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+          <a class="platform" href="#">APPLE PODCASTS <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+          <a class="platform" href="#">RSS FEED <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+          <a class="platform" href="https://youtube.com/@mirrortransmissions">YOUTUBE <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ====== / 03 — WATCH ====== -->
+<section class="section" id="watch" data-screen-label="03-watch">
+  <div class="container">
+
+    <header class="section__head">
+      <div data-reveal>
+        <div class="eyebrow">
+          <span class="slash">/</span><span class="num">03</span><span class="lbl">VIDEO</span>
+        </div>
+        <h2 class="section__title">WATCH</h2>
+        <p class="section__sub">Landscape deep dives. One per Fracture: a narrated examination of the mechanics, generated with NotebookLM. The full BOOE conversation rendered in motion.</p>
+      </div>
+    </header>
+
+    <!-- Tabs filter the rail below. No more href="#explore" — these
+         are filters, not anchors. Per-kind accent color shifts the
+         active tab + rail accent so the section visibly changes. -->
+    <div class="watch-kinds" data-reveal>
+      <button class="watch-kind watch-kind--deep-dives is-active" type="button" data-kind="deep-dives">
+        <span class="dot"></span>EXPLAINERS
+      </button>
+      <button class="watch-kind watch-kind--verticals" type="button" data-kind="verticals">
+        <span class="dot"></span>SHORTS
+      </button>
+      <button class="watch-kind watch-kind--statics" type="button" data-kind="statics">
+        <span class="dot"></span>STATICS
+      </button>
+    </div>
+
+    <!-- ============ Deep dives · 16:9 · yellow ============ -->
+    <div class="watch-panel watch-panel--deep-dives is-active" data-kind="deep-dives" data-reveal>
+      <div class="watch-rail">
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 01</span><span class="video-card__status">// generating</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Oneness</h4><span class="video-card__dur">—:—</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 02</span><span class="video-card__status">// generating</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Now</h4><span class="video-card__dur">—:—</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 03</span><span class="video-card__status">// generating</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">The Self</h4><span class="video-card__dur">—:—</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 04</span><span class="video-card__status">// generating</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Separation</h4><span class="video-card__dur">—:—</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 05</span><span class="video-card__status">// generating</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Nothing waits</h4><span class="video-card__dur">—:—</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 06</span><span class="video-card__status">// generating</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">The Story</h4><span class="video-card__dur">—:—</span></div>
+          <div class="video-card__play"><span>▶</span></div>
         </a>
       </div>
     </div>
-  </div>
 
-  <div class="hero__scroll" aria-hidden="true">
-    <div class="hero__scroll-line"></div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     ENTRY POINT (THE THREE PILLARS)
-     ═══════════════════════════════════════════ -->
-<section class="entry" id="entry">
-  <div class="entry__wrap">
-    <h2 class="section-label" data-glitch="THIS IS THE ENTRY POINT">THIS IS THE ENTRY POINT</h2>
-    <div class="entry__grid">
-
-      <div class="entry__card" data-reveal>
-        <div class="entry__card-accent"></div>
-        <h3 class="entry__card-title">SEPARATION</h3>
-        <p>Something feels off.</p>
-        <p>Life is experienced as inside and outside. Here and there. Self and Other.</p>
-        <p>That sense of Separation feels normal and unquestionable, quietly shaping Fear, desire, and reaction before thought appears.</p>
+    <!-- ============ Verticals · 9:16 · violet ============ -->
+    <div class="watch-panel watch-panel--verticals" data-kind="verticals" data-reveal>
+      <div class="watch-rail">
+        <a class="video-card video-card--vertical video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 01</span><span class="video-card__status">// queued</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Oneness</h4><span class="video-card__dur">0:59</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--vertical video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 02</span><span class="video-card__status">// queued</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Now</h4><span class="video-card__dur">0:48</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--vertical video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 03</span><span class="video-card__status">// queued</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">The Self</h4><span class="video-card__dur">1:14</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--vertical video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 04</span><span class="video-card__status">// queued</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Separation</h4><span class="video-card__dur">0:52</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--vertical video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 05</span><span class="video-card__status">// queued</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Nothing waits</h4><span class="video-card__dur">0:41</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--vertical video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 06</span><span class="video-card__status">// queued</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">The Story</h4><span class="video-card__dur">1:02</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
       </div>
-
-      <div class="entry__card" data-reveal>
-        <div class="entry__card-accent"></div>
-        <h3 class="entry__card-title">SELF</h3>
-        <p>Something feels solid. A "me." A center.</p>
-        <p>A continuity that seems obvious and personal.</p>
-        <p>That center feels stable, responsible, and real, holding experience together as if it could not be otherwise.</p>
-      </div>
-
-      <div class="entry__card" data-reveal>
-        <div class="entry__card-accent"></div>
-        <h3 class="entry__card-title">STORY</h3>
-        <p>Nothing stands alone.</p>
-        <p>Experience is memorized, explained, justified, and repeated. Moments become Meaning. Meaning becomes Identity.</p>
-        <p>Story does not undo Separation. It keeps it coherent, rehearsed, and Believable, even as it begins to strain.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     THE BOOK
-     ═══════════════════════════════════════════ -->
-<section class="book" id="book">
-  <div class="book__wrap">
-    <div class="book__header">
-      <h2 class="section-label" data-glitch="THE BOOK">THE BOOK</h2>
-      <p class="book__desc">A precision-built interruption. It exposes how The Mind converts experience into Narrative, then Identity, then defense.</p>
-      <p class="book__desc book__desc--dim">Not spirituality. Not self-help. Not a new set of Beliefs. Not a path. Not a promise.</p>
     </div>
 
-    <div class="book__editions">
-
-      <div class="book__edition book__edition--day" data-reveal data-edition="day">
-        <h3 class="book__edition-title book__edition-title--day">DAY EDITION</h3>
-        <p class="book__edition-desc">The primary cut. The full device. Paperback. No frills.</p>
-        <div class="book__edition-bottom">
-          <div class="book__edition-price">$24.99</div>
-          <div class="book__edition-format">Paperback</div>
-        </div>
+    <!-- ============ Static visuals · 16:9 · green ============ -->
+    <div class="watch-panel watch-panel--statics" data-kind="statics" data-reveal>
+      <div class="watch-rail">
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 01</span><span class="video-card__status">// Statics</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Oneness</h4><span class="video-card__dur">13 slides</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 02</span><span class="video-card__status">// Statics</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Now</h4><span class="video-card__dur">15 slides</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 03</span><span class="video-card__status">// Statics</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">The Self</h4><span class="video-card__dur">— slides</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 04</span><span class="video-card__status">// Statics</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Separation</h4><span class="video-card__dur">— slides</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 05</span><span class="video-card__status">// Statics</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">Nothing waits</h4><span class="video-card__dur">— slides</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
+        <a class="video-card video-card--pending" href="#">
+          <div class="video-card__top"><span class="video-card__num">F · 06</span><span class="video-card__status">// Statics</span></div>
+          <div class="video-card__bottom"><h4 class="video-card__title">The Story</h4><span class="video-card__dur">— slides</span></div>
+          <div class="video-card__play"><span>▶</span></div>
+        </a>
       </div>
-
-      <div class="book__edition book__edition--night" data-reveal data-edition="night">
-        <h3 class="book__edition-title book__edition-title--night">NIGHT EDITION</h3>
-        <p class="book__edition-desc">The same device in a different frequency. A darker room. A quieter knife.</p>
-        <div class="book__edition-bottom">
-          <div class="book__edition-price">$69.99 <span class="book__edition-alt">/ $89.99</span></div>
-          <div class="book__edition-format">Paperback / Hardcover</div>
-        </div>
-      </div>
-
-      <div class="book__edition book__edition--ebook" data-reveal data-edition="ebook">
-        <h3 class="book__edition-title book__edition-title--ebook">EBOOK EDITION</h3>
-        <p class="book__edition-desc">The device without paper. Immediate. Portable. No reduction in the cut.</p>
-        <div class="book__edition-bottom">
-          <div class="book__edition-price">$9.99</div>
-          <div class="book__edition-format">eBook</div>
-        </div>
-      </div>
-
-      <div class="book__edition book__edition--audio" data-reveal data-edition="audio">
-        <h3 class="book__edition-title book__edition-title--audio">AUDIOBOOK EDITION</h3>
-        <p class="book__edition-desc">The device in voice. For driving. Walking. Lying awake. A blade in the ear.</p>
-        <div class="book__edition-bottom">
-          <div class="book__edition-price">Coming Soon</div>
-          <div class="book__edition-format">Audio</div>
-        </div>
-      </div>
-
     </div>
 
-    <div class="book__cta">
-      <a href="/get-the-book" class="btn btn--primary" target="_blank" rel="noopener">
-        GET THE BOOK
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <p class="book__cta-note">One link. All retailers. All formats.</p>
+    <div class="watch-footer">
+      <span>// queued for release · one per Fracture</span>
+      <a href="https://youtube.com/@mirrortransmissions">Subscribe on YouTube →</a>
     </div>
+
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     ABOUT
-     ═══════════════════════════════════════════ -->
-<section class="about" id="about">
-  <div class="about__wrap">
-    <h2 class="section-label" data-glitch="ABOUT">ABOUT</h2>
 
-    <div class="about__grid">
-      <div class="about__block" data-reveal>
-        <h3>THE WORK</h3>
-        <p>THE BOOK OF ONENESS is a structural examination of how The Mind constructs and maintains The Illusion of Separation.</p>
-        <p>It is not spiritual literature. Not self-help. Not motivational. It offers no path, no techniques, no promises of transformation.</p>
-        <p>It exposes what is already operating.</p>
+<!-- Watch tab filter — swap visible panel + active tab on click. -->
+<script>
+(function(){
+  const tabs = document.querySelectorAll('.watch-kind');
+  const panels = document.querySelectorAll('.watch-panel');
+  if (!tabs.length || !panels.length) return;
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const kind = tab.dataset.kind;
+      tabs.forEach(t => t.classList.toggle('is-active', t === tab));
+      panels.forEach(p => p.classList.toggle('is-active', p.dataset.kind === kind));
+    });
+  });
+})();
+</script>
+
+
+<!-- ====== / 04 — EXPLORE ====== -->
+<section class="section section--alt" id="explore" data-screen-label="04-explore">
+  <div class="container">
+
+    <header class="section__head">
+      <div data-reveal>
+        <div class="eyebrow">
+          <span class="slash">/</span><span class="num">04</span><span class="lbl">INDEX</span>
+        </div>
+        <h2 class="section__title">EXPLORE</h2>
+        <p class="section__sub">Twenty Parts. One hundred forty-three Fractures, named precisely. Fifty Collapses, reserved for those who finish the arc. <em>THE MIND</em>, mapped. Not interpreted.</p>
+      </div>
+    </header>
+
+    <!-- The "• FRACTURES •" intermission — cyan twin of the Collapse
+         banner below. Sets the tonal expectation for Parts I–XII. -->
+    <div class="arc-banner arc-banner--fractures" data-reveal aria-hidden="true">
+      <div class="arc-banner__text">
+        <span class="bul">•</span>
+        <span class="word">FRACTURE</span>
+        <span class="bul">•</span>
+      </div>
+    </div>
+
+    <!-- ============ ARC ONE · PARTS I–XII · the 143 Fractures ============ -->
+    <div class="explore-arc explore-arc--free" data-reveal>
+      <div class="explore-arc__head">
+        <div class="explore-arc__num">PARTS&nbsp;I&nbsp;–&nbsp;XII</div>
+        <div class="explore-arc__label">// 143 FRACTURES</div>
+        <div class="explore-arc__count">// 12 PARTS · OPEN <span class="hint">← SCROLL →</span></div>
       </div>
 
-      <div class="about__block" data-reveal>
-        <h3>[MIRR&#216;R]</h3>
-        <p>The Story of The Self behind this work is not relevant.</p>
-        <p>THE BOOK OF ONENESS was written to stand without Identity. Not as Belief. Not as doctrine. Not as instruction.</p>
-        <p>So the structures shaping experience can be examined. Without personality. Without authority. Without allegiance.</p>
-      </div>
-
-      <div class="about__block" data-reveal>
-        <h3>MIRROR PUBLISHING</h3>
-        <p>MIRROR Publishing exists for one purpose: to hold and distribute this work.</p>
-        <p>No brand. No movement. No method. No community. No program.</p>
-        <p>A surface where the language can land. And be seen.</p>
-      </div>
-
-      <div class="about__block" data-reveal>
-        <h3>WHAT THIS IS NOT</h3>
-        <p>Not a teaching site. Not a community. Not a program. Not a brand. Not a movement.</p>
-        <p>Not a guru text. Not a promise of enlightenment, transformation, or peace. Not a journey with a destination.</p>
-        <p>It will not fix you. It will not improve you.</p>
+      <!--
+        Each Part card uses the printed-page art (Abril Fatface title on
+        void, cyan ink). On click → /parts/part-NN.html. Subpages built
+        in the Claude Code pass.
+        Fracture count per Part is TODO — placeholders read
+        "// fractures · TBC" until Bodhi sends final counts.
+      -->
+      <div class="parts">
+        <a class="part" href="parts/part-01.html" aria-label="Part I — The First Stirring">
+          <div class="part__cover"><img src="assets/parts/part-01.png" alt="Part I · The First Stirring"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 14 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="part" href="parts/part-02.html" aria-label="Part II — The Human Pattern">
+          <div class="part__cover"><img src="assets/parts/part-02.png" alt="Part II · The Human Pattern"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 17 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="part" href="parts/part-03.html" aria-label="Part III — Roles">
+          <div class="part__cover"><img src="assets/parts/part-03.png" alt="Part III · Roles"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 13 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="part" href="parts/part-04.html" aria-label="Part IV — The Story of the World">
+          <div class="part__cover"><img src="assets/parts/part-04.png" alt="Part IV · The Story of the World"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 8 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="part" href="parts/part-05.html" aria-label="Part V — The Myth of Ownership">
+          <div class="part__cover"><img src="assets/parts/part-05.png" alt="Part V · The Myth of Ownership"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 9 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="part" href="parts/part-06.html" aria-label="Part VI — Rise of the System">
+          <div class="part__cover"><img src="assets/parts/part-06.png" alt="Part VI · Rise of the System"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 17 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="part" href="parts/part-07.html" aria-label="Part VII — Theater of Governance">
+          <div class="part__cover"><img src="assets/parts/part-07.png" alt="Part VII · Theater of Governance"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 7 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="part" href="parts/part-08.html" aria-label="Part VIII — Commerce of Control">
+          <div class="part__cover"><img src="assets/parts/part-08.png" alt="Part VIII · Commerce of Control"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 10 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="part" href="parts/part-09.html" aria-label="Part IX — The Age of Extraction">
+          <div class="part__cover"><img src="assets/parts/part-09.png" alt="Part IX · The Age of Extraction"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 12 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="part" href="parts/part-10.html" aria-label="Part X — The Age of Suffering">
+          <div class="part__cover"><img src="assets/parts/part-10.png" alt="Part X · The Age of Suffering"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 13 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="part" href="parts/part-11.html" aria-label="Part XI — The Age of Computation">
+          <div class="part__cover"><img src="assets/parts/part-11.png" alt="Part XI · The Age of Computation"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 11 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="part" href="parts/part-12.html" aria-label="Part XII — Global Delusion">
+          <div class="part__cover"><img src="assets/parts/part-12.png" alt="Part XII · Global Delusion"></div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 12 fractures</span>
+            <span class="part__meta-cta">OPEN <span class="arr">→</span></span>
+          </div>
+        </a>
       </div>
     </div>
 
-    <div class="about__faq">
-      <h3 class="about__faq-title">BEFORE YOU ASK</h3>
-      <div class="faq">
-        <details class="faq__item" data-reveal>
-          <summary>What is THE BOOK OF ONENESS?</summary>
-          <p>A precision interruption. It exposes how The Mind converts experience into Narrative, then Identity, then defense.</p>
-        </details>
-        <details class="faq__item" data-reveal>
-          <summary>Is it self-help or spirituality?</summary>
-          <p>No. It does not comfort you, upgrade you, or give you a Story to join.</p>
-        </details>
-        <details class="faq__item" data-reveal>
-          <summary>Who is [MIRR&#216;R]?</summary>
-          <p>A name, not a persona. The work is not asking for allegiance to an author. Read the device, not the Identity behind it.</p>
-        </details>
-        <details class="faq__item" data-reveal>
-          <summary>Where do I buy it?</summary>
-          <p>Use the hub link. It stays constant while platform links update behind it. <a href="/get-the-book" target="_blank" rel="noopener">Get THE BOOK</a></p>
-        </details>
-        <details class="faq__item" data-reveal>
-          <summary>Can I contact the author or publisher?</summary>
-          <p>Not directly. This project avoids access, authority, and correspondence cycles. If a public channel is ever opened, it will appear on this site.</p>
-        </details>
+    <!-- The "• COLLAPSE •" intermission — set in live Abril Fatface
+         instead of a rasterised page scan so it stays crisp at every
+         viewport. Visual handoff between the arc and the gate. -->
+    <div class="arc-banner arc-banner--collapse" data-reveal aria-hidden="true">
+      <div class="arc-banner__text">
+        <span class="bul">•</span>
+        <span class="word">COLLAPSE</span>
+        <span class="bul">•</span>
       </div>
     </div>
+
+    <!-- ============ ARC TWO · PARTS XIII–XX · the 50 Collapses · GATED ============ -->
+    <div class="explore-arc explore-arc--collapse" data-reveal id="collapses">
+      <div class="explore-arc__head">
+        <div class="explore-arc__num">PARTS&nbsp;XIII&nbsp;–&nbsp;XX</div>
+        <div class="explore-arc__label">// 50 COLLAPSES</div>
+        <div class="explore-arc__count">
+          <span class="explore-arc__count-locked">// 8 PARTS · LOCKED <span class="hint">← SCROLL →</span></span>
+          <span class="explore-arc__count-unlocked">// 8 PARTS · OPEN <span class="hint">← SCROLL →</span></span>
+        </div>
+      </div>
+
+      <!--
+        THE GATE — magic-link email unlock (Parts XIII–XX).
+        Three UI states + an error state live as siblings inside the
+        single <form>. The active state is selected by the form's
+        `data-gate-state` attr, set by JS on load / submit / token-check.
+
+        Production wiring (Claude Code, separate handoff):
+          - localStorage 'booe_collapse_unlocked' === 'true' on load
+            → setState('unlocked') immediately.
+          - URL ?unlock=<token> on load
+            → POST to Supabase validate-token Edge Fn
+              · success → setState('unlocked'), persist localStorage
+              · failure → setState('error')
+          - Form submit
+            → POST to Supabase request-access Edge Fn (generates token,
+              sends email via Resend)
+            → setState('pending')
+          - Resend link
+            → same as form submit, but pulled from the cached email.
+      -->
+      <form class="gate" id="collapse-gate" data-gate-state="locked" autocomplete="off" novalidate>
+
+        <!-- STATE 1 · LOCKED (default) -->
+        <div class="gate__state gate__state--locked">
+          <div class="gate__intro">
+            <p class="gate__line">
+              <span class="slash">//</span>Parts XIII–XX are reserved for those who have completed the arc.
+            </p>
+            <p class="gate__body">Enter your email to receive your access link.</p>
+          </div>
+
+          <div class="gate__form">
+            <label class="gate__field" for="collapse-email">
+              <span class="gate__field-marker" aria-hidden="true">&gt;</span>
+              <input id="collapse-email" type="email" name="email" placeholder="your@email.com" autocomplete="email" spellcheck="false" required>
+            </label>
+            <button type="submit" class="gate__submit">
+              UNLOCK THE COLLAPSES
+              <span class="arr" aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <p class="gate__note">
+            <span class="slash">//</span>One-time link. <span class="sep">·</span> No account. <span class="sep">·</span> No subscription.
+            <a class="gate__alt" href="/get-the-book">don't have the book yet? <span class="arr" aria-hidden="true">→</span> <strong>GET THE BOOK</strong></a>
+          </p>
+        </div>
+
+        <!-- STATE 2 · PENDING (link sent, awaiting click) -->
+        <div class="gate__state gate__state--pending">
+          <p class="gate__pending-head">
+            <span class="pulse" aria-hidden="true"></span>
+            Link sent.
+          </p>
+          <p class="gate__pending-body">
+            Check your inbox. Click the link to unlock the Collapses.
+          </p>
+          <p class="gate__pending-detail">
+            The link is single-use and expires in 24 hours.
+          </p>
+          <button type="button" class="gate__resend" id="gate-resend">
+            Resend link
+          </button>
+        </div>
+
+        <!-- STATE 3 · UNLOCKED (token validated, cards revealed) -->
+        <div class="gate__state gate__state--unlocked">
+          <p class="gate__unlocked-line">
+            <span class="pulse" aria-hidden="true"></span>
+            Access confirmed. The Collapses are open.
+          </p>
+        </div>
+
+        <!-- ERROR · token invalid or expired -->
+        <div class="gate__state gate__state--error">
+          <div class="gate__intro">
+            <p class="gate__error">
+              Link expired or already used.
+              <span class="gate__error-detail">Request a new one below.</span>
+            </p>
+            <p class="gate__line">
+              <span class="slash">//</span>Parts XIII–XX are reserved for those who have completed the arc.
+            </p>
+          </div>
+
+          <div class="gate__form">
+            <label class="gate__field" for="collapse-email-err">
+              <span class="gate__field-marker" aria-hidden="true">&gt;</span>
+              <input id="collapse-email-err" type="email" name="email" placeholder="your@email.com" autocomplete="email" spellcheck="false" required>
+            </label>
+            <button type="submit" class="gate__submit">
+              UNLOCK THE COLLAPSES
+              <span class="arr" aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <p class="gate__note">
+            <span class="slash">//</span>One-time link. <span class="sep">·</span> No account. <span class="sep">·</span> No subscription.
+            <a class="gate__alt" href="/get-the-book">don't have the book yet? <span class="arr" aria-hidden="true">→</span> <strong>GET THE BOOK</strong></a>
+          </p>
+        </div>
+
+      </form>
+
+      <!--
+        Locked Part cards. Titles are deliberately NOT rendered until the
+        gate is passed (per QA Q4). The cover slot is sized 2:3 to drop
+        in the real Collapse cover art once Bodhi sends them.
+      -->
+      <div class="parts" id="collapses-grid">
+        <a class="part part--locked" data-collapse="13" href="#collapse-gate" aria-label="Part XIII — locked">
+          <div class="part__cover">
+            <img class="part__cover-blur" src="assets/parts/part-13.png" alt="" aria-hidden="true">
+            <div class="part__cover-veil"></div>
+            <div class="part__locked-eyebrow">PART<br><span class="dim">·</span> XIII <span class="dim">·</span></div>
+            <div class="part__locked-glyph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><rect x="5" y="11" width="14" height="9"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+            </div>
+            <div class="part__locked-tag">// LOCKED</div>
+          </div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 5 collapses</span>
+            <span class="part__meta-cta"><span class="part__meta-cta-text">KEY REQUIRED</span></span>
+          </div>
+        </a>
+
+        <a class="part part--locked" data-collapse="14" href="#collapse-gate" aria-label="Part XIV — locked">
+          <div class="part__cover">
+            <img class="part__cover-blur" src="assets/parts/part-14.png" alt="" aria-hidden="true">
+            <div class="part__cover-veil"></div>
+            <div class="part__locked-eyebrow">PART<br><span class="dim">·</span> XIV <span class="dim">·</span></div>
+            <div class="part__locked-glyph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><rect x="5" y="11" width="14" height="9"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+            </div>
+            <div class="part__locked-tag">// LOCKED</div>
+          </div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 5 collapses</span>
+            <span class="part__meta-cta"><span class="part__meta-cta-text">KEY REQUIRED</span></span>
+          </div>
+        </a>
+
+        <a class="part part--locked" data-collapse="15" href="#collapse-gate" aria-label="Part XV — locked">
+          <div class="part__cover">
+            <img class="part__cover-blur" src="assets/parts/part-15.png" alt="" aria-hidden="true">
+            <div class="part__cover-veil"></div>
+            <div class="part__locked-eyebrow">PART<br><span class="dim">·</span> XV <span class="dim">·</span></div>
+            <div class="part__locked-glyph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><rect x="5" y="11" width="14" height="9"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+            </div>
+            <div class="part__locked-tag">// LOCKED</div>
+          </div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 7 collapses</span>
+            <span class="part__meta-cta"><span class="part__meta-cta-text">KEY REQUIRED</span></span>
+          </div>
+        </a>
+
+        <a class="part part--locked" data-collapse="16" href="#collapse-gate" aria-label="Part XVI — locked">
+          <div class="part__cover">
+            <img class="part__cover-blur" src="assets/parts/part-16.png" alt="" aria-hidden="true">
+            <div class="part__cover-veil"></div>
+            <div class="part__locked-eyebrow">PART<br><span class="dim">·</span> XVI <span class="dim">·</span></div>
+            <div class="part__locked-glyph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><rect x="5" y="11" width="14" height="9"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+            </div>
+            <div class="part__locked-tag">// LOCKED</div>
+          </div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 6 collapses</span>
+            <span class="part__meta-cta"><span class="part__meta-cta-text">KEY REQUIRED</span></span>
+          </div>
+        </a>
+
+        <a class="part part--locked" data-collapse="17" href="#collapse-gate" aria-label="Part XVII — locked">
+          <div class="part__cover">
+            <img class="part__cover-blur" src="assets/parts/part-17.png" alt="" aria-hidden="true">
+            <div class="part__cover-veil"></div>
+            <div class="part__locked-eyebrow">PART<br><span class="dim">·</span> XVII <span class="dim">·</span></div>
+            <div class="part__locked-glyph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><rect x="5" y="11" width="14" height="9"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+            </div>
+            <div class="part__locked-tag">// LOCKED</div>
+          </div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 7 collapses</span>
+            <span class="part__meta-cta"><span class="part__meta-cta-text">KEY REQUIRED</span></span>
+          </div>
+        </a>
+
+        <a class="part part--locked" data-collapse="18" href="#collapse-gate" aria-label="Part XVIII — locked">
+          <div class="part__cover">
+            <img class="part__cover-blur" src="assets/parts/part-18.png" alt="" aria-hidden="true">
+            <div class="part__cover-veil"></div>
+            <div class="part__locked-eyebrow">PART<br><span class="dim">·</span> XVIII <span class="dim">·</span></div>
+            <div class="part__locked-glyph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><rect x="5" y="11" width="14" height="9"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+            </div>
+            <div class="part__locked-tag">// LOCKED</div>
+          </div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 7 collapses</span>
+            <span class="part__meta-cta"><span class="part__meta-cta-text">KEY REQUIRED</span></span>
+          </div>
+        </a>
+
+        <a class="part part--locked" data-collapse="19" href="#collapse-gate" aria-label="Part XIX — locked">
+          <div class="part__cover">
+            <img class="part__cover-blur" src="assets/parts/part-19.png" alt="" aria-hidden="true">
+            <div class="part__cover-veil"></div>
+            <div class="part__locked-eyebrow">PART<br><span class="dim">·</span> XIX <span class="dim">·</span></div>
+            <div class="part__locked-glyph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><rect x="5" y="11" width="14" height="9"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+            </div>
+            <div class="part__locked-tag">// LOCKED</div>
+          </div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 6 collapses</span>
+            <span class="part__meta-cta"><span class="part__meta-cta-text">KEY REQUIRED</span></span>
+          </div>
+        </a>
+
+        <a class="part part--locked" data-collapse="20" href="#collapse-gate" aria-label="Part XX — locked">
+          <div class="part__cover">
+            <img class="part__cover-blur" src="assets/parts/part-20.png" alt="" aria-hidden="true">
+            <div class="part__cover-veil"></div>
+            <div class="part__locked-eyebrow">PART<br><span class="dim">·</span> XX <span class="dim">·</span></div>
+            <div class="part__locked-glyph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><rect x="5" y="11" width="14" height="9"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+            </div>
+            <div class="part__locked-tag">// LOCKED</div>
+          </div>
+          <div class="part__meta">
+            <span class="part__meta-count">// 7 collapses</span>
+            <span class="part__meta-cta"><span class="part__meta-cta-text">KEY REQUIRED</span></span>
+          </div>
+        </a>
+      </div>
+
+    </div>
+
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     FOOTER
-     ═══════════════════════════════════════════ -->
-<footer class="footer">
-  <div class="footer__wrap">
-    <div class="footer__left">
-      <div class="footer__brand">THE BOOK OF ONENESS</div>
-      <div class="footer__meta">&copy; <span id="year"></span> [MIRR&#216;R]. All rights reserved.</div>
-      <div class="footer__meta">Published by MIRROR Publishing.</div>
+
+<!-- ===== Gate state controller =====
+     Front-end only. Claude Code will replace the placeholder POSTs
+     below with real Supabase Edge Function calls + Resend email send.
+     The state machine itself (locked → pending → unlocked / error)
+     and the card-reveal class toggle stay as-is. -->
+<script>
+(function() {
+  const form = document.getElementById('collapse-gate');
+  if (!form) return;
+  const grid = document.getElementById('collapses-grid');
+  const arc  = document.getElementById('collapses');
+  const resendBtn = document.getElementById('gate-resend');
+  const LS_KEY = 'booe_collapse_unlocked';
+
+  function setState(next) {
+    form.setAttribute('data-gate-state', next);
+    if (next === 'unlocked') {
+      grid.classList.add('parts--unlocked');
+      arc.classList.add('is-unlocked');
+      try { localStorage.setItem(LS_KEY, 'true'); } catch (_) {}
+    } else {
+      grid.classList.remove('parts--unlocked');
+      arc.classList.remove('is-unlocked');
+    }
+  }
+
+  // 1. Persisted unlock — returning visitor stays unlocked.
+  try {
+    if (localStorage.getItem(LS_KEY) === 'true') {
+      setState('unlocked');
+      return;
+    }
+  } catch (_) { /* localStorage unavailable; carry on. */ }
+
+  // 2. Magic-link callback — ?unlock=<token>.
+  // Claude Code: replace this stub with a fetch() to the
+  // validate-token Edge Function. On success → setState('unlocked').
+  // On failure → setState('error').
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('unlock');
+  if (token) {
+    // Validate the magic-link token server-side. Atomic UPDATE in Supabase
+    // prevents token reuse. On success, persist unlock to localStorage so
+    // returning visitors don't need to re-click the link.
+    fetch('https://pobddtmnzimcdiaujyyf.supabase.co/functions/v1/validate-token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: token })
+    })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.valid) {
+          try { localStorage.setItem(LS_KEY, 'true'); } catch (_) {}
+        }
+        setState(d.valid ? 'unlocked' : 'error');
+      })
+      .catch(function() { setState('error'); });
+    return;
+  }
+
+  // 3. Submit → pending.
+  function isEmail(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v); }
+
+  function submitEmail(email) {
+    if (!isEmail(email)) return false;
+    // Move to pending immediately so the user gets instant feedback.
+    // The Edge Function generates a token, writes it to Supabase, and
+    // sends the magic link via Resend — all asynchronously.
+    try { sessionStorage.setItem('booe_pending_email', email); } catch (_) {}
+    setState('pending');
+    fetch('https://pobddtmnzimcdiaujyyf.supabase.co/functions/v1/request-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).catch(function() {
+      // Fail silently — user is already on the "check your email" screen.
+      // A late error state here would be confusing since we can't undo the UI change.
+      console.warn('[booe-gate] request-access call failed');
+    });
+    return true;
+  }
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Each state has its own email input; read whichever one belongs
+    // to the currently-active state.
+    const state = form.getAttribute('data-gate-state');
+    const input = form.querySelector('.gate__state--' + state + ' input[type="email"]');
+    const email = input ? input.value.trim() : '';
+    submitEmail(email);
+  });
+
+  // Resend link → run the request again with the cached email, then
+  // drop back into "pending" (re-triggers the dot pulse).
+  if (resendBtn) {
+    resendBtn.addEventListener('click', function() {
+      const cached = (function() {
+        try { return sessionStorage.getItem('booe_pending_email') || ''; }
+        catch (_) { return ''; }
+      })();
+      if (!cached) {
+        // No cached email (e.g. fresh tab) — return to the form so the
+        // visitor can re-enter it.
+        setState('locked');
+        return;
+      }
+      resendBtn.disabled = true;
+      submitEmail(cached);
+      setTimeout(function() { resendBtn.disabled = false; }, 4000);
+    });
+  }
+})();
+</script>
+
+
+<!-- ====== / 05 — GLOSSARY ======
+     Bucket-filtered core terms grid. Pulls term data from
+     window.GLOSSARY (loaded via glossary-data.js at end of body).
+     The grid + filter behavior is wired in the script block below
+     the section. Default view: ALL buckets, ALL terms. -->
+<section class="section section--alt" id="glossary" data-screen-label="05-glossary">
+  <div class="container">
+
+    <header class="section__head">
+      <div data-reveal>
+        <div class="eyebrow">
+          <span class="slash">/</span><span class="num">05</span><span class="lbl">GLOSSARY</span>
+        </div>
+        <h2 class="section__title">THE CORE TERMS</h2>
+        <p class="section__sub">The language of <em>THE BOOK OF ONENESS</em>, defined precisely. Filter by bucket or search.</p>
+      </div>
+    </header>
+
+    <div class="glossary" id="glossary-module" data-reveal>
+
+      <!-- Controls: inline keyword search + pill tab row -->
+      <div class="glossary__controls">
+        <label class="glossary__inline-search" for="glossary-search">
+          <span class="glossary__inline-search-prompt" aria-hidden="true">&gt;</span>
+          <input
+            id="glossary-search"
+            type="search"
+            placeholder="Filter terms by keyword…"
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Filter glossary terms"
+          >
+          <button type="button" class="glossary__inline-search-clear" id="glossary-search-clear" hidden>clear</button>
+        </label>
+
+        <!-- Bucket pills — built by JS so counts stay in sync with the
+             data file. The "ALL" pill is hardcoded as the default. -->
+        <div class="glossary__tabs" id="glossary-tabs" role="tablist">
+          <button class="glossary__tab is-active" data-bucket="all" role="tab" aria-selected="true">
+            <span class="num">00</span>ALL<span class="count" id="glossary-tab-all-count"></span>
+          </button>
+          <!-- JS appends one pill per bucket here -->
+        </div>
+
+        <div class="glossary__meta">
+          <span><span class="slash">//</span>SHOWING <b id="glossary-meta-shown">—</b> OF <b id="glossary-meta-total">—</b> TERMS</span>
+          <span id="glossary-meta-bucket"></span>
+        </div>
+      </div>
+
+      <!-- Carousel — single horizontal rail populated by JS from
+           window.GLOSSARY. Filter pills + inline keyword hide/show
+           individual cards; the rail itself stays mounted. -->
+      <div class="glossary__rail-wrap">
+        <button class="glossary__rail-arrow glossary__rail-arrow--prev is-disabled" id="glossary-rail-prev" type="button" aria-label="Scroll previous">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><polyline points="15 6 9 12 15 18"/></svg>
+        </button>
+        <div class="glossary__rail" id="glossary-rail" role="list"></div>
+        <button class="glossary__rail-arrow glossary__rail-arrow--next" id="glossary-rail-next" type="button" aria-label="Scroll next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+      </div>
+
+      <!-- No-results fallback -->
+      <div class="glossary__empty">
+        <span class="slash">//</span>NO TERMS MATCH "<span id="glossary-empty-q"></span>"
+      </div>
+
     </div>
-    <div class="footer__right">
-      <a href="/get-the-book" target="_blank" rel="noopener">Get THE BOOK</a>
+
+  </div>
+</section>
+
+
+<!-- ====== / 06 — ABOUT ====== -->
+<section class="section" id="about" data-screen-label="06-about">
+  <div class="container">
+
+    <header class="section__head">
+      <div data-reveal>
+        <div class="eyebrow">
+          <span class="slash">/</span><span class="num">06</span><span class="lbl">AUTHOR</span>
+        </div>
+        <h2 class="section__title">ABOUT THE AUTHOR</h2>
+      </div>
+    </header>
+
+    <div class="about">
+      <aside data-reveal>
+        <h3 class="about__mark"><img src="assets/about-mirror-mark.png" alt="[MIRRØR]"></h3>
+      </aside>
+      <div class="about__manifesto" data-reveal data-delay="1">
+        <p class="stanza">The Story of <em>The Self</em> behind this work is not relevant.</p>
+        <p class="stanza">THE BOOK OF ONENESS was written to stand without <em>Identity</em>.</p>
+        <div class="trio">
+          <span>Not as Belief.</span>
+          <span>Not as doctrine.</span>
+          <span>Not as instruction.</span>
+        </div>
+        <p class="stanza">So the structures shaping experience can be examined.</p>
+        <div class="trio">
+          <span>Without personality.</span>
+          <span>Without authority.</span>
+          <span>Without allegiance.</span>
+        </div>
+        <div class="sig"><span class="sig__mark">[MIRRØR]</span></div>
+      </div>
+    </div>
+
+    <div class="faq" data-reveal>
+      <div class="faq__item">
+        <h4 class="faq__q">// Who is [MIRRØR]?</h4>
+        <p class="faq__a">[MIRRØR] has no public identity. The Story of The Self behind this work is not relevant: not as belief, not as doctrine, not as instruction. The work stands without it.</p>
+      </div>
+      <div class="faq__item">
+        <h4 class="faq__q">// What is THE BOOK OF ONENESS?</h4>
+        <p class="faq__a">A structural examination of how THE MIND constructs IDENTITY, SEPARATION, and THE STORY OF THE SELF. 143 Fractures. Not self-help. Not spirituality. A mirror.</p>
+      </div>
+      <div class="faq__item">
+        <h4 class="faq__q">// Where can I buy it?</h4>
+        <p class="faq__a">Worldwide. The <a href="/get-the-book">GET THE BOOK</a> link auto-routes to your closest retailer: Amazon, Bookshop, Barnes &amp; Noble, or IngramSpark, by region.</p>
+      </div>
+      <div class="faq__item">
+        <h4 class="faq__q">// What is BOOE?</h4>
+        <p class="faq__a">BOOK OF ONENESS EXPOSED: the podcast. One episode per Fracture. The chapter read in full, followed by a two-voice AI examination of the mechanics. Launching as the feed goes live.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+
+<!-- ====== FOOTER ====== -->
+<footer class="footer" data-screen-label="07-footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <h3 class="footer__mark" data-glitch="THE BOOK OF ONENESS">THE BOOK OF ONENESS</h3>
+        <p class="footer__byline">
+          by <span class="brand-mirror"><span class="brk">[</span>MIRRØR<span class="brk">]</span></span>  <span class="brand-pub">·  Published by MIRROR Publishing</span>
+        </p>
+      </div>
+      <div class="footer__col">
+        <h6 class="footer__col-label">// Pages</h6>
+        <ul>
+          <li><a href="#the-book">The Book</a></li>
+          <li><a href="#listen">Listen</a></li>
+          <li><a href="#watch">Watch</a></li>
+          <li><a href="#explore">Explore</a></li>
+          <li><a href="#glossary">Glossary</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h6 class="footer__col-label">// Channels</h6>
+        <ul>
+          <li><a href="https://youtube.com/@mirrortransmissions">YouTube</a></li>
+          <li><a href="https://tiktok.com/@mirrortransmissions">TikTok</a></li>
+          <li><a href="https://instagram.com/mirrortransmissions">Instagram</a></li>
+          <li><a href="https://facebook.com/mirrortransmissions">Facebook</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h6 class="footer__col-label">// Contact</h6>
+        <ul>
+          <li><a href="mailto:charles@mirrorpublishinghouse.com">Press</a></li>
+          <li><a href="mailto:charles@mirrorpublishinghouse.com">Rights</a></li>
+          <li><a href="/get-the-book">Get the book</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© MIRROR Publishing 2026  ·  All rights reserved</span>
+      <ul class="footer__social" style="list-style:none; padding:0; margin:0;">
+        <li><a href="https://youtube.com/@mirrortransmissions" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a></li>
+        <li><a href="https://tiktok.com/@mirrortransmissions" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 6.3a5.7 5.7 0 0 1-3.4-1.2 5.6 5.6 0 0 1-2.2-4H10v13.6a3 3 0 1 1-2.2-2.9V7.6A6.6 6.6 0 1 0 14 14.1V8.7a8.9 8.9 0 0 0 5.6 1.9V6.3z"/></svg></a></li>
+        <li><a href="https://instagram.com/mirrortransmissions" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a></li>
+        <li><a href="https://facebook.com/mirrortransmissions" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3.2H13V8.8c0-.9.3-1.6 1.6-1.6h1.7V4.3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7v3.2h2.6V22H13z"/></svg></a></li>
+      </ul>
+      <a class="footer__cta" href="/get-the-book">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
     </div>
   </div>
 </footer>
 
-<!-- EDITION MODAL -->
-<div class="modal-overlay" id="editionModal" aria-hidden="true">
-  <div class="modal">
-    <button class="modal__close" id="modalClose" aria-label="Close">&times;</button>
-    <div class="modal__inner">
-      <div class="modal__cover">
-        <img src="" alt="" class="modal__cover-img" id="modalCoverImg">
-      </div>
-      <div class="modal__info">
-        <h3 class="modal__title" id="modalTitle"></h3>
-        <p class="modal__desc" id="modalDesc"></p>
-        <div class="modal__price" id="modalPrice"></div>
-        <div class="modal__format" id="modalFormat"></div>
-        <a href="/get-the-book" class="btn btn--primary modal__btn" target="_blank" rel="noopener">
-          GET THIS EDITION
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
 
-<script src="/js/site.js"></script>
-<script src="/js/fracture.js"></script>
+<script>
+/* =============================================================
+   Reveal-on-scroll
+   ============================================================= */
+(function(){
+  const els = Array.from(document.querySelectorAll('[data-reveal]'));
+  if (!els.length) return;
+
+  // If reduced motion or no IO support, leave everything visible (default state).
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || !('IntersectionObserver' in window)) return;
+
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  els.forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top >= vh) el.setAttribute('data-pending', '');
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.removeAttribute('data-pending');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
+  els.forEach(el => { if (el.hasAttribute('data-pending')) io.observe(el); });
+
+  setTimeout(() => {
+    document.querySelectorAll('[data-reveal][data-pending]').forEach(el => el.removeAttribute('data-pending'));
+  }, 1500);
+})();
+
+/* =============================================================
+   (Carousel wheel-hijack removed — it was trapping the page scroll
+   when the cursor sat over a .parts rail. Carousels now scroll the
+   normal way: touch/drag, trackpad horizontal swipe, shift + wheel,
+   or the scrollbar itself. Vertical wheel always scrolls the page.)
+   ============================================================= */
+</script>
+
+
+<!-- ====== GLOSSARY DATA ======
+     Single source of truth for the glossary section + global search.
+     Loaded as a global so every page (term pages too) can use it. -->
+<script src="glossary-data.js"></script>
+<script src="glossary-search.js"></script>
+
+<!-- ====== GLOSSARY + GLOBAL SEARCH CONTROLLER ======
+     Three things live in here:
+       1. Renders the Glossary section grid (bucket sections + cards)
+          from window.GLOSSARY.
+       2. Wires the bucket-tab filter + inline keyword filter
+          (scoped to the visible grid).
+       3. Wires the persistent global search bar (dropdown of hits,
+          click to navigate to /glossary/<slug>).
+     -->
+<script>
+(function () {
+  if (!window.GLOSSARY) {
+    console.warn('[glossary] data file not loaded — skipping renderer');
+    return;
+  }
+  const { BUCKETS, TERMS, BUCKET_BY_ID, TERMS_BY_BUCKET } = window.GLOSSARY;
+
+  // -----------------------------------------------------------
+  // 1. RENDER — single horizontal rail of term cards
+  // -----------------------------------------------------------
+  const rail = document.getElementById('glossary-rail');
+  const tabsRow = document.getElementById('glossary-tabs');
+  const metaShown = document.getElementById('glossary-meta-shown');
+  const metaTotal = document.getElementById('glossary-meta-total');
+  const metaBucket = document.getElementById('glossary-meta-bucket');
+  const allCount = document.getElementById('glossary-tab-all-count');
+  const moduleEl = document.getElementById('glossary-module');
+  const emptyQ = document.getElementById('glossary-empty-q');
+  const inlineSearch = document.getElementById('glossary-search');
+  const inlineClear = document.getElementById('glossary-search-clear');
+  const railPrev = document.getElementById('glossary-rail-prev');
+  const railNext = document.getElementById('glossary-rail-next');
+
+  if (!rail || !tabsRow) return;
+
+  const TOTAL = TERMS.length;
+  if (metaTotal) metaTotal.textContent = TOTAL;
+  if (allCount)  allCount.textContent = ' · ' + TOTAL;
+
+  // Build the bucket pills.
+  BUCKETS.forEach(function (b) {
+    const btn = document.createElement('button');
+    btn.className = 'glossary__tab';
+    btn.type = 'button';
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('data-bucket', b.id);
+    btn.innerHTML =
+      '<span class="num">' + b.number + '</span>' +
+      b.name.toUpperCase() +
+      '<span class="count">' + TERMS_BY_BUCKET[b.id].length + '</span>';
+    tabsRow.appendChild(btn);
+  });
+
+  // Build the rail: one .term-card per term, in canonical bucket
+  // order. Filter state hides cards via the `hidden` attribute so
+  // the layout reflows cleanly.
+  function renderRail() {
+    rail.innerHTML = '';
+    TERMS.forEach(function (term) {
+      const a = document.createElement('a');
+      a.className = 'term-card';
+      a.href = 'glossary/' + (term.dup || term.slug) + '.html';
+      a.setAttribute('data-term-slug', term.slug);
+      a.setAttribute('data-term-name', term.name.toLowerCase());
+      a.setAttribute('data-term-bucket', term.bucket);
+      a.setAttribute('role', 'listitem');
+      a.innerHTML =
+        '<div class="term-card__bucket">// ' + BUCKET_BY_ID[term.bucket].name.toUpperCase() + '</div>' +
+        '<h4 class="term-card__name">' + term.name + '</h4>' +
+        '<svg class="term-card__arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">' +
+          '<path d="M5 19 L19 5 M9 5 L19 5 L19 15"/>' +
+        '</svg>';
+      rail.appendChild(a);
+    });
+  }
+
+  // -----------------------------------------------------------
+  // 2. FILTER — pill tabs + inline keyword
+  // -----------------------------------------------------------
+  let activeBucket = 'all';
+  let activeQuery = '';
+
+  function applyFilters() {
+    const q = activeQuery.trim().toLowerCase();
+    let shown = 0;
+    rail.querySelectorAll('.term-card').forEach(function (card) {
+      const name = card.getAttribute('data-term-name') || '';
+      const bucket = card.getAttribute('data-term-bucket');
+      const matchesBucket = activeBucket === 'all' || activeBucket === bucket;
+      const matchesQ = !q || name.includes(q);
+      const visible = matchesBucket && matchesQ;
+      card.hidden = !visible;
+      if (visible) shown++;
+    });
+    if (metaShown) metaShown.textContent = shown;
+    if (metaBucket) {
+      metaBucket.innerHTML = activeBucket === 'all'
+        ? ''
+        : '<span class="slash">//</span>FILTER · ' + BUCKET_BY_ID[activeBucket].name.toUpperCase();
+    }
+    if (moduleEl) moduleEl.classList.toggle('is-empty', shown === 0);
+    if (emptyQ) emptyQ.textContent = q || (activeBucket !== 'all' ? BUCKET_BY_ID[activeBucket].name : '');
+    if (inlineClear) inlineClear.hidden = q.length === 0;
+
+    // Reset scroll position so the first visible card is at the
+    // start of the rail when the filter changes.
+    rail.scrollTo({ left: 0, behavior: 'smooth' });
+    updateRailArrows();
+  }
+
+  function setBucket(id) {
+    activeBucket = id;
+    document.querySelectorAll('.glossary__tab').forEach(function (b) {
+      const isActive = b.getAttribute('data-bucket') === id;
+      b.classList.toggle('is-active', isActive);
+      b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+    applyFilters();
+  }
+
+  tabsRow.addEventListener('click', function (e) {
+    const btn = e.target.closest('.glossary__tab');
+    if (!btn) return;
+    setBucket(btn.getAttribute('data-bucket'));
+  });
+
+  if (inlineSearch) {
+    inlineSearch.addEventListener('input', function () {
+      activeQuery = inlineSearch.value || '';
+      applyFilters();
+    });
+  }
+  if (inlineClear) {
+    inlineClear.addEventListener('click', function () {
+      inlineSearch.value = '';
+      activeQuery = '';
+      applyFilters();
+      inlineSearch.focus();
+    });
+  }
+
+  // -----------------------------------------------------------
+  // 3. CAROUSEL ARROWS — sweep the rail by ~one card width per click
+  // -----------------------------------------------------------
+  function updateRailArrows() {
+    if (!railPrev || !railNext) return;
+    const max = rail.scrollWidth - rail.clientWidth - 2;
+    const x = rail.scrollLeft;
+    railPrev.classList.toggle('is-disabled', x <= 4);
+    railNext.classList.toggle('is-disabled', x >= max);
+  }
+  function railStep(dir) {
+    const card = rail.querySelector('.term-card:not([hidden])');
+    const step = card ? (card.getBoundingClientRect().width + 16) * 2 : 320;
+    rail.scrollBy({ left: dir * step, behavior: 'smooth' });
+  }
+  if (railPrev) railPrev.addEventListener('click', function () { railStep(-1); });
+  if (railNext) railNext.addEventListener('click', function () { railStep(1); });
+  rail.addEventListener('scroll', updateRailArrows, { passive: true });
+  window.addEventListener('resize', updateRailArrows);
+
+  renderRail();
+  applyFilters();
+  // updateRailArrows is called from applyFilters but the initial
+  // scrollWidth may not be measured until layout settles — run again
+  // on next frame just in case.
+  requestAnimationFrame(updateRailArrows);
+
+
+  // -----------------------------------------------------------
+  // Global search bar is handled by glossary-search.js (loaded
+  // separately). This script only owns the home-page glossary
+  // carousel + filter pills.
+  // -----------------------------------------------------------
+})();
+</script>
+
+</body>
 </html>

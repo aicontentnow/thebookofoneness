@@ -1,0 +1,298 @@
+/* =============================================================
+   GLOBAL SEARCH — icon-in-nav + fullscreen overlay
+   =============================================================
+   Loaded on every page. Provides:
+     - .nav__search-btn — magnifying-glass icon injected into the nav
+     - .search-overlay  — fullscreen modal opened on click / ⌘K
+   The companion script (glossary-search.js) injects markup, wires
+   the open/close/search behavior, and reads from window.GLOSSARY.
+   ============================================================= */
+
+/* ---- Search icon button (lives inside .nav__inner, before the CTA) ---- */
+.nav__search-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; height: 40px;
+  background: transparent;
+  border: 1px solid rgba(240,240,240,0.18);
+  color: #B8B8B8;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: border-color 140ms cubic-bezier(0.16,1,0.3,1),
+              color 140ms cubic-bezier(0.16,1,0.3,1),
+              background 140ms cubic-bezier(0.16,1,0.3,1);
+}
+.nav__search-btn:hover,
+.nav__search-btn:focus-visible {
+  border-color: #FFE000;
+  color: #FFE000;
+  background: rgba(255,224,0,0.06);
+  outline: 0;
+}
+.nav__search-btn svg { width: 16px; height: 16px; display: block; }
+
+/* ---- Fullscreen overlay ---- */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+}
+.search-overlay.is-open { display: block; }
+
+.search-overlay__backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  animation: search-fade 180ms cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes search-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.search-overlay__panel {
+  position: relative;
+  margin: clamp(48px, 8vh, 96px) auto 0;
+  max-width: 880px;
+  width: min(92vw, 880px);
+  padding: clamp(24px, 3vw, 36px);
+  background: #050505;
+  border: 1px solid rgba(240,240,240,0.18);
+  box-shadow: 0 40px 100px -20px rgba(0,0,0,0.95);
+  animation: search-rise 240ms cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes search-rise {
+  from { transform: translateY(-12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.search-overlay__head {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(18px, 2.4vw, 28px);
+}
+.search-overlay__eyebrow {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #666;
+}
+.search-overlay__eyebrow .slash {
+  color: #FF2D6F;
+  margin-right: 8px;
+}
+.search-overlay__close {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent;
+  border: 1px solid rgba(240,240,240,0.18);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #B8B8B8;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: color 140ms, border-color 140ms;
+}
+.search-overlay__close:hover { color: #F0F0F0; border-color: rgba(240,240,240,0.4); }
+
+/* The input itself — large, monospace, void background. Same
+   "type into the dark" aesthetic as the gate, but bigger so it
+   reads as the primary action on the page. */
+.search-overlay__input-row {
+  display: flex; align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  background: #0A0A0A;
+  border: 1px solid rgba(240,240,240,0.18);
+  margin-bottom: 14px;
+  transition: border-color 140ms, box-shadow 140ms;
+}
+.search-overlay__input-row:focus-within {
+  border-color: #C8A96E;
+  box-shadow: 0 0 0 1px rgba(200,169,110,0.45),
+              0 0 32px -8px rgba(200,169,110,0.45);
+}
+.search-overlay__glass {
+  flex-shrink: 0;
+  color: #FF2D6F;
+  width: 22px; height: 22px;
+  display: block;
+}
+.search-overlay__input {
+  flex: 1; min-width: 0;
+  background: transparent;
+  border: 0; outline: 0;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: clamp(18px, 1.8vw, 22px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #F0F0F0;
+  padding: 0;
+}
+.search-overlay__input::placeholder {
+  color: #666;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+.search-overlay__input::-webkit-search-cancel-button { display: none; }
+.search-overlay__kbd {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #666;
+  border: 1px solid rgba(240,240,240,0.18);
+  padding: 4px 8px;
+  flex-shrink: 0;
+}
+
+.search-overlay__hint {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: clamp(16px, 2vw, 22px);
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.search-overlay__hint b { color: #FFE000; font-weight: 500; }
+.search-overlay__hint .slash { color: #FF2D6F; margin-right: 6px; }
+.search-overlay__hint .sep { color: #2A2A2A; }
+
+/* Results scrollable area. Card-style hits with bucket + term name. */
+.search-overlay__results {
+  max-height: 56vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(240,240,240,0.18) transparent;
+  border-top: 1px solid rgba(240,240,240,0.08);
+}
+.search-overlay__results::-webkit-scrollbar { width: 6px; }
+.search-overlay__results::-webkit-scrollbar-thumb {
+  background: rgba(240,240,240,0.18);
+  border-radius: 3px;
+}
+
+.search-overlay__hit {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) 1fr auto;
+  gap: 22px;
+  align-items: baseline;
+  padding: 18px 4px;
+  border-bottom: 1px solid rgba(240,240,240,0.08);
+  text-decoration: none;
+  color: #F0F0F0;
+  transition: background 140ms;
+}
+.search-overlay__hit:last-child { border-bottom: 0; }
+.search-overlay__hit:hover,
+.search-overlay__hit.is-focused {
+  background: rgba(77,138,255,0.08);
+}
+.search-overlay__hit-bucket {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #4D8AFF;
+  white-space: nowrap;
+}
+.search-overlay__hit-name {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #F0F0F0;
+  margin: 0;
+  min-width: 0;
+}
+.search-overlay__hit-name mark {
+  background: rgba(255,224,0,0.22);
+  color: #FFE000;
+  padding: 0 2px;
+}
+.search-overlay__hit-arrow {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 14px;
+  color: rgba(240,240,240,0.18);
+  transition: color 140ms, transform 140ms;
+}
+.search-overlay__hit:hover .search-overlay__hit-arrow,
+.search-overlay__hit.is-focused .search-overlay__hit-arrow {
+  color: #4D8AFF;
+  transform: translateX(4px);
+}
+
+.search-overlay__empty {
+  padding: 32px 4px 8px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #666;
+}
+.search-overlay__empty .slash { color: #FF2D6F; margin-right: 8px; }
+
+/* Initial state — when the field is empty we show a tip card row
+   nudging users toward popular jumpoffs (one per bucket). */
+.search-overlay__suggestions {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 22px 4px 8px;
+}
+.search-overlay__suggestion {
+  display: inline-flex; align-items: center;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid rgba(240,240,240,0.18);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #B8B8B8;
+  text-decoration: none;
+  transition: border-color 140ms, color 140ms;
+}
+.search-overlay__suggestion:hover {
+  border-color: #4D8AFF;
+  color: #4D8AFF;
+}
+.search-overlay__suggestion .num {
+  color: #666;
+  margin-right: 8px;
+  font-size: 9.5px;
+}
+.search-overlay__suggestions-eyebrow {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #666;
+  margin: 22px 0 0;
+  padding-left: 4px;
+}
+.search-overlay__suggestions-eyebrow .slash { color: #FF2D6F; margin-right: 8px; }
+
+/* Disable body scroll while the overlay is open. JS toggles this. */
+body.search-open {
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .search-overlay__panel { margin-top: 0; min-height: 100vh; }
+  .search-overlay__hit {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 14px 4px;
+  }
+  .search-overlay__hit-arrow { display: none; }
+}

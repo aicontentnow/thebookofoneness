@@ -1,0 +1,276 @@
+/* =============================================================
+   Term page styles. Subset of site.css — only what's needed for
+   nav + search + term body + footer. Tokens identical to the
+   main site so colours / type stay aligned.
+   ============================================================= */
+:root{
+  --void:#0A0A0A; --void-2:#050505; --void-3:#111111; --void-4:#161616;
+  --fg:#F0F0F0; --fg-2:#B8B8B8; --fg-muted:#666666; --fg-line:#2A2A2A;
+  --yellow:#FFE000; --yellow-d:#E5C800; --yellow-hover:#FFEC4D; --yellow-tint:rgba(255,224,0,0.10);
+  --pink:#FF2D6F; --pink-hover:#FF4F88; --pink-tint:rgba(255,45,111,0.12);
+  --gold:#C8A96E;
+  --signal-cyan:#00C2C7; --signal-green:#4ADE80; --signal-red:#E5232F;
+  --azure:#4D8AFF; --azure-rgb:77,138,255;
+  --hairline:rgba(240,240,240,0.08); --hairline-strong:rgba(240,240,240,0.18);
+  --f-display:'Abril Fatface','Playfair Display',Georgia,serif;
+  --f-body:'Space Grotesk','Inter',system-ui,sans-serif;
+  --f-head:'Space Grotesk','Inter',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono','IBM Plex Mono',ui-monospace,monospace;
+  --max-w:1440px; --gutter:clamp(20px,4vw,56px);
+  --nav-h:68px; --header-h:var(--nav-h);
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --dur:240ms; --dur-fast:140ms;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:var(--header-h)}
+body{margin:0;background:var(--void);color:var(--fg);font-family:var(--f-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--gold);color:var(--void)}
+a{color:inherit;text-decoration:none;transition:color var(--dur-fast) var(--ease)}
+a:hover{color:var(--yellow)}
+
+/* Ambient layers */
+.scanlines,.grain,.vignette{position:fixed;inset:0;pointer-events:none;z-index:80}
+.scanlines{background:repeating-linear-gradient(0deg,rgba(255,255,255,0.025) 0 1px,transparent 1px 3px);mix-blend-mode:overlay;opacity:0.55}
+.grain{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.10 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");mix-blend-mode:overlay;opacity:0.40}
+.vignette{z-index:79;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.55) 100%)}
+
+/* ----- NAV ----- */
+.nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(10,10,10,0.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hairline);z-index:100}
+.nav__inner{display:flex;align-items:center;justify-content:space-between;height:100%;max-width:var(--max-w);margin:0 auto;padding:0 var(--gutter)}
+.nav__brand{font-family:var(--f-body);font-weight:700;font-size:13px;letter-spacing:0.22em;text-transform:uppercase;color:var(--fg)}
+.nav__links{display:flex;gap:32px;list-style:none;padding:0;margin:0}
+.nav__links a{font-family:var(--f-mono);font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--fg-2)}
+.nav__links a:hover,.nav__links a.is-active{color:var(--yellow)}
+.nav__cta{display:inline-flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:var(--fg);background:var(--pink);padding:12px 18px;transition:background var(--dur-fast) var(--ease)}
+.nav__cta:hover{background:var(--pink-hover);color:var(--fg)}
+.nav__cta .arr-ico{width:14px;height:14px}
+@media (max-width:800px){.nav__links{display:none}}
+
+/* ----- SEARCH BAR ----- */
+.search-bar{position:fixed;top:var(--nav-h);left:0;right:0;height:var(--search-h);background:rgba(5,5,5,0.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--hairline);z-index:99}
+.search-bar__inner{display:flex;align-items:center;height:100%;max-width:var(--max-w);margin:0 auto;padding:0 var(--gutter);gap:18px}
+.search-bar__eyebrow{font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:var(--fg-muted);white-space:nowrap;flex-shrink:0}
+.search-bar__eyebrow .slash{color:var(--pink);margin-right:6px}
+.search-bar__prompt{font-family:var(--f-mono);font-size:13px;color:var(--pink);flex-shrink:0;margin-right:-8px}
+.search-bar__input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--fg);font-family:var(--f-mono);font-size:13px;letter-spacing:0.04em;height:100%}
+.search-bar__input::placeholder{color:var(--fg-muted);letter-spacing:0.04em;text-transform:none}
+.search-bar__input::-webkit-search-cancel-button{display:none}
+.search-bar__kbd{font-family:var(--f-mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg-muted);border:1px solid var(--hairline-strong);padding:4px 8px;white-space:nowrap;flex-shrink:0}
+.search-bar:focus-within .search-bar__eyebrow .slash{color:var(--gold)}
+.search-bar:focus-within{border-bottom-color:rgba(200,169,110,0.4)}
+.search-bar__results{position:absolute;top:var(--search-h);left:50%;transform:translateX(-50%);width:100%;max-width:var(--max-w);padding:0 var(--gutter);pointer-events:none;opacity:0;transition:opacity var(--dur-fast) var(--ease)}
+.search-bar.is-open .search-bar__results{opacity:1;pointer-events:auto}
+.search-bar__results-inner{background:rgba(5,5,5,0.98);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--hairline-strong);border-top:0;max-height:60vh;overflow-y:auto;box-shadow:0 30px 80px -20px rgba(0,0,0,0.9)}
+.search-bar__results-empty{padding:18px 22px;font-family:var(--f-mono);font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:var(--fg-muted)}
+.search-bar__results-empty .slash{color:var(--pink);margin-right:8px}
+.search-bar__results-meta{padding:12px 22px;font-family:var(--f-mono);font-size:9.5px;letter-spacing:0.28em;text-transform:uppercase;color:var(--fg-muted);border-bottom:1px solid var(--hairline)}
+.search-bar__results-meta b{color:var(--yellow);font-weight:500}
+.search-hit{display:grid;grid-template-columns:200px 1fr auto;gap:24px;align-items:baseline;padding:14px 22px;border-bottom:1px solid var(--hairline);text-decoration:none;color:var(--fg);transition:background var(--dur-fast) var(--ease)}
+.search-hit:last-child{border-bottom:0}
+.search-hit:hover,.search-hit.is-focused{background:rgba(255,224,0,0.06)}
+.search-hit__bucket{font-family:var(--f-mono);font-size:9.5px;letter-spacing:0.28em;text-transform:uppercase;color:var(--azure);white-space:nowrap}
+.search-hit__name{font-family:var(--f-head);font-weight:700;font-size:14px;letter-spacing:0.02em;text-transform:uppercase;color:var(--fg);min-width:0}
+.search-hit__name mark{background:rgba(255,224,0,0.22);color:var(--yellow);padding:0 2px}
+.search-hit__snip{font-family:var(--f-body);font-size:12px;color:var(--fg-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:480px;justify-self:end}
+@media (max-width:800px){.search-bar__eyebrow,.search-bar__kbd{display:none}.search-hit{grid-template-columns:1fr;gap:6px}}
+
+/* ----- LAYOUT ----- */
+.container{width:100%;max-width:var(--max-w);margin:0 auto;padding:0 var(--gutter)}
+
+/* ----- TERM PAGE BODY ----- */
+.term-page{
+  padding-top:calc(var(--header-h) + 48px);
+  padding-bottom:clamp(64px,8vw,128px);
+}
+
+/* Breadcrumb / eyebrow row above the term name */
+.term-page__breadcrumb{
+  display:flex;align-items:center;gap:14px;
+  font-family:var(--f-mono);
+  font-size:11px;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:var(--fg-muted);
+  margin-bottom:clamp(20px,3vw,40px);
+  flex-wrap:wrap;
+}
+.term-page__breadcrumb a{color:var(--fg-2)}
+.term-page__breadcrumb a:hover{color:var(--yellow)}
+.term-page__breadcrumb .sep{color:var(--fg-line)}
+.term-page__breadcrumb .bucket{color:var(--azure)}
+
+/* The headline area */
+.term-page__head{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:clamp(24px,4vw,56px);
+  align-items:end;
+  padding-bottom:clamp(28px,3.5vw,40px);
+  border-bottom:1px solid var(--hairline);
+  margin-bottom:clamp(36px,4vw,56px);
+}
+@media (max-width:760px){.term-page__head{grid-template-columns:1fr;gap:16px}}
+.term-page__eyebrow{/* violet — matches the home page glossary section accent */
+  font-family:var(--f-mono);
+  font-size:12px;
+  letter-spacing:0.32em;
+  text-transform:uppercase;
+  color:var(--azure);
+  margin:0 0 14px;
+  display:flex;align-items:center;gap:10px;
+}
+.term-page__eyebrow .slash{color:var(--pink)}
+.term-page__title{
+  font-family:var(--f-display);
+  font-weight:400;
+  font-size:clamp(60px,11vw,168px);
+  line-height:0.86;
+  letter-spacing:-0.01em;
+  margin:0;
+  color:var(--fg);
+}
+/* The slash through Ø reads as a print artefact at huge scale — the
+   display face handles it natively. No styling beyond the font. */
+.term-page__chip{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--f-mono);
+  font-size:10px;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:var(--fg-muted);
+  border:1px solid var(--hairline-strong);
+  padding:8px 12px;
+  white-space:nowrap;
+}
+.term-page__chip .num{color:var(--yellow)}
+
+/* Definition body — the SEO/AEO surface. Readable line length. */
+.term-page__definition{
+  font-family:var(--f-body);
+  font-size:clamp(17px,1.4vw,21px);
+  line-height:1.6;
+  color:var(--fg);
+  max-width:65ch;
+}
+.term-page__definition p{margin:0 0 1.1em}
+.term-page__definition p:last-child{margin-bottom:0}
+.term-page__definition em{color:var(--yellow);font-style:normal;font-weight:500}
+
+/* Placeholder note inline with the definition — strip when wiring
+   real content. Helps reviewers spot it's still a mock. */
+.term-page__placeholder-note{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-top:24px;padding:10px 14px;
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--yellow);
+  border:1px solid rgba(255,224,0,0.3);
+  background:rgba(255,224,0,0.04);
+}
+
+/* Divider */
+.term-page__rule{
+  height:1px;background:var(--hairline);
+  border:0;margin:clamp(56px,6vw,96px) 0;
+}
+
+/* Related row */
+.term-page__related{margin-bottom:clamp(40px,5vw,72px)}
+.term-page__related-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+  margin-bottom:clamp(18px,2.4vw,28px);
+}
+.term-page__related-eyebrow{
+  font-family:var(--f-mono);font-size:11px;
+  letter-spacing:0.32em;text-transform:uppercase;
+  color:var(--azure);
+}
+.term-page__related-eyebrow .slash{color:var(--pink);margin-right:8px}
+.term-page__related-meta{
+  font-family:var(--f-mono);font-size:10.5px;
+  letter-spacing:0.24em;text-transform:uppercase;
+  color:var(--fg-muted);
+}
+.term-page__related-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:clamp(10px,1vw,14px);
+}
+
+/* Card style identical to home page glossary cards so the visual
+   vocabulary stays consistent — clicking a card on the term page
+   should feel like clicking a card in the home grid. */
+.term-card{
+  position:relative;display:flex;flex-direction:column;gap:14px;
+  padding:22px 22px 24px;
+  background:#0d0d0d;border:1px solid #1a1a1a;
+  text-decoration:none;color:inherit;
+  transition:border-color var(--dur-fast) var(--ease),background var(--dur-fast) var(--ease);
+  min-height:140px;
+}
+.term-card:hover{border-color:var(--azure);background:linear-gradient(rgba(var(--azure-rgb),0.08),rgba(var(--azure-rgb),0.08)),var(--void-4);box-shadow:0 0 0 1px rgba(var(--azure-rgb),0.30),0 22px 56px -16px rgba(var(--azure-rgb),0.45);transform:translateY(-3px) scale(1.01)}
+.term-card__bucket{font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:var(--azure)}
+.term-card__name{font-family:var(--f-head);font-weight:700;font-size:clamp(16px,1.4vw,18px);letter-spacing:0.02em;text-transform:uppercase;color:var(--fg);margin:2px 0 0;line-height:1.15}
+.term-card__snip{font-family:var(--f-body);font-size:14px;line-height:1.45;color:#666;margin:auto 0 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.term-card__arr{position:absolute;right:14px;bottom:14px;width:14px;height:14px;color:var(--fg-line)}
+.term-card:hover .term-card__arr{color:var(--azure);transform:translate(2px,-2px)}
+
+/* Prev / Next nav at the bottom of every term page. Two equal cells
+   reading like flipping pages — left edge = back, right edge = forward. */
+.term-page__seq{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1px;
+  background:var(--hairline);
+  border:1px solid var(--hairline);
+}
+@media (max-width:640px){.term-page__seq{grid-template-columns:1fr}}
+.term-page__seq-link{
+  display:flex;flex-direction:column;gap:8px;
+  padding:clamp(20px,2.4vw,28px) clamp(20px,2vw,28px);
+  background:var(--void-3);
+  color:var(--fg);
+  transition:background var(--dur-fast) var(--ease);
+}
+.term-page__seq-link:hover{background:var(--void-4)}
+.term-page__seq-link--next{align-items:flex-end;text-align:right}
+.term-page__seq-link-eyebrow{
+  font-family:var(--f-mono);font-size:10px;
+  letter-spacing:0.32em;text-transform:uppercase;
+  color:var(--fg-muted);
+  display:inline-flex;align-items:center;gap:8px;
+}
+.term-page__seq-link:hover .term-page__seq-link-eyebrow{color:var(--yellow)}
+.term-page__seq-link-name{
+  font-family:var(--f-head);font-weight:700;
+  font-size:clamp(20px,2vw,28px);line-height:1;
+  letter-spacing:-0.005em;text-transform:uppercase;color:var(--fg);
+}
+.term-page__seq-link-bucket{
+  font-family:var(--f-mono);font-size:9.5px;
+  letter-spacing:0.28em;text-transform:uppercase;
+  color:var(--azure);
+}
+.term-page__seq-edge{font-size:14px;opacity:0.6;transition:transform var(--dur-fast) var(--ease)}
+.term-page__seq-link:hover .term-page__seq-edge{transform:translateX(0)}
+.term-page__seq-link--prev:hover .term-page__seq-edge{transform:translateX(-4px)}
+.term-page__seq-link--next:hover .term-page__seq-edge{transform:translateX(4px)}
+
+/* ----- FOOTER ----- */
+.footer{
+  position:relative;
+  padding:clamp(48px,5vw,72px) 0 clamp(28px,3vw,40px);
+  border-top:1px solid var(--hairline);
+  background:var(--void-2);
+  font-size:14px;
+}
+.footer__bottom{
+  display:flex;justify-content:space-between;align-items:center;gap:24px;
+  flex-wrap:wrap;
+  font-family:var(--f-mono);
+  font-size:11px;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--fg-muted);
+}
+.footer__bottom a{color:var(--fg-2)}
+.footer__bottom a:hover{color:var(--yellow)}

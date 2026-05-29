@@ -1,0 +1,432 @@
+/* =============================================================
+   GLOSSARY DATA — THE BOOK OF ONENESS
+   =============================================================
+   Single source of truth for:
+     - the Glossary section on the home page (bucket tabs + cards)
+     - the global search bar (term name + snippet substring match)
+     - the individual term pages (e.g. /glossary/the-mind)
+
+   Structure:
+     - This file is a plain global (no module export) loaded with
+       <script src="glossary-data.js"></script> from both the home
+       page and every term page.
+     - DEFS maps each slug to its canonical snippet and definition,
+       extracted from the source PDF at build time.
+     - The bucket order, term order within each bucket, and slugs
+       are all production-ready. Do not reorder.
+   ============================================================= */
+window.GLOSSARY = (function () {
+
+  // Canonical definitions keyed by slug.
+  // snippet  = first ~120 chars shown on the glossary card.
+  // definition = full body text used on individual term pages.
+  var DEFS = {
+    'oneness': {
+      snippet: 'The undivided totality before all perception. It is not a state, not an Identity, not Presence, not a creation, and not a source.',
+      definition: 'The undivided totality before all perception. It is not a state, not an Identity, not Presence, not a creation, and not a source. Oneness cannot be entered, understood, or experienced. It has never been absent. It is what remains when all Forms, The Illusion of Separation, Stories, Myths, and Delusions dissolve.'
+    },
+    'now-the-present': {
+      snippet: 'The undivided immediacy of Oneness. It is not a moment, not a feeling, and not a state of Presence.',
+      definition: 'The undivided immediacy of Oneness. It is not a moment, not a feeling, and not a state of Presence. It cannot pass, be approached, or be returned to. It does not unfold. It is what remains when the projection of The Myth of Time is no longer Believed.'
+    },
+    'formlessness': {
+      snippet: 'That which has no shape, edge, or distinction. Formlessness is not the opposite of Form. It is the unbroken continuity of Oneness before division is perceived.',
+      definition: 'That which has no shape, edge, or distinction. Formlessness is not the opposite of Form. It is the unbroken continuity of Oneness before division is perceived. It includes The Pulse and The Ache, not as contents, but as undivided stirrings. Formlessness does not precede Form. It remains indivisible from it.'
+    },
+    'the-field': {
+      snippet: 'The unbroken expanse of Oneness within which all Form arises and dissolves. The Field is not space, not location, not emptiness.',
+      definition: 'The unbroken expanse of Oneness within which all Form arises and dissolves. The Field is not space, not location, not emptiness. It is not absence. It is the seamless ground that allows sound and silence, thought and stillness, movement and stillness, without division. The Field is not entered or attained. It is already what holds every arising, untouched by The Illusion of Separation.'
+    },
+    'the-pulse': {
+      snippet: 'The first tremble within Formlessness. The Pulse is not movement, not sequence, and not origin. It is the undivided rhythm of Oneness in silent release.',
+      definition: 'The first tremble within Formlessness. The Pulse is not movement, not sequence, and not origin. It is the undivided rhythm of Oneness in silent release. It does not begin. It does not arrive. It is the spontaneous stirring of pressure within the seamless: not aimed, not caused. The Pulse does not push through space. It vibrates through Everything. It is the rhythm before Form. Motion before direction. Presence unable to remain still.'
+    },
+    'the-pattern': {
+      snippet: 'The earliest structure emerging within The Pulse. The Pattern is not designed. It is what appears when vibration recurs.',
+      definition: 'The earliest structure emerging within The Pulse. The Pattern is not designed. It is what appears when vibration recurs. The Pattern is not a shape or formula. It is repetition made visible. It gives Form its coherence, but it holds no Meaning.'
+    },
+    'form': {
+      snippet: 'The appearance of edge. Form is not a thing. It is the temporary boundary shaped by The Pattern. Form allows Oneness to seem divided without ever being divided.',
+      definition: 'The appearance of edge. Form is not a thing. It is the temporary boundary shaped by The Pattern. Form allows Oneness to seem divided without ever being divided. All Form dissolves. All Form is motion appearing to hold still.'
+    },
+    'the-ache': {
+      snippet: 'The first internal tension within Form. The Ache is not emotion, need, or pain. It is the press of continuity, the strain of replication, the invisible torque within all living Form.',
+      definition: 'The first internal tension within Form. The Ache is not emotion, need, or pain. It is the press of continuity, the strain of replication, the invisible torque within all living Form. The Ache drives emergence and perpetuates survival instinct, but it does not explain them.'
+    },
+    'intelligence': {
+      snippet: 'The innate alignment of Form to The Pattern. Intelligence is not creation, thought, strategy, or awareness. It is coherence without design.',
+      definition: 'The innate alignment of Form to The Pattern. Intelligence is not creation, thought, strategy, or awareness. It is coherence without design. Intelligence moves without motive. It is Oneness shaping itself in The Field through Form before knowledge, before Self.'
+    },
+    'life': {
+      snippet: 'The visible intensification of Intelligence through Form. Life is not Sacred, Superior, or defined by species. It does not begin, strive, or end.',
+      definition: 'The visible intensification of Intelligence through Form. Life is not Sacred, Superior, or defined by species. It does not begin, strive, or end. Life appears where The Pattern concentrates replication and decay. It is Oneness moving as Form, without intention or permanence.'
+    },
+    'the-body': {
+      snippet: 'The localized appearance of Form. The Body is not a container or possession. It is not an object. It is the lived structure of sensation through Form.',
+      definition: 'The localized appearance of Form. The Body is not a container or possession. It is not an object. It is the lived structure of sensation through Form.'
+    },
+    'the-surround': {
+      snippet: 'The immediate field of Form in relation. The Surround is not environment. It is the proximity of texture, density, motion, and Presence.',
+      definition: 'The immediate field of Form in relation. The Surround is not environment. It is the proximity of texture, density, motion, and Presence. It does not explain. It does not reflect. It is what is near before anything is Known.'
+    },
+    'impermanence': {
+      snippet: 'The unrelenting erosion of all Form. Impermanence is not loss. It is not death. It is the direct observation that nothing holds.',
+      definition: 'The unrelenting erosion of all Form. Impermanence is not loss. It is not death. It is the direct observation that nothing holds. Impermanence is the motion beneath all appearance. It is Oneness never resting.'
+    },
+    'the-fear': {
+      snippet: 'The evolutionary rupture that gave rise to The Mind. The Fear is not instinct or reflex. It is the cognitive overwhelm triggered when the human brain encountered Patterns it could not organize.',
+      definition: 'The evolutionary rupture that gave rise to The Mind. The Fear is not instinct or reflex. It is the cognitive overwhelm triggered when the human brain encountered Patterns it could not organize, rhythms it could not predict, and conditions it could not survive through sensation alone. Other species adapted through response. But the human brain began to simulate. The Fear is what compelled the brain to create internal continuity, giving rise to The Mind, The Self, and the need to stabilize experience through Narration of Stories. It was not threat that produced The Fear. It was scale. It was not enemy. It was The Unheld. It was not error. It was Impermanence. The Fear is not emotion. It is the structural origin of The Illusion of Separation.'
+    },
+    'the-mind': {
+      snippet: 'The simulator of The Illusion of Separation. The Mind is the internal Narrator that organizes perception into continuity. It does not seek what is. It seeks what can be named and stabilized.',
+      definition: 'The simulator of The Illusion of Separation. The Mind is the internal Narrator that organizes perception into continuity. It does not seek what is. It seeks what can be named and stabilized. It recycles sensation into Story, filters experience into labels, and rehearses experience to maintain Identity. The Mind emerged when the human brain began simulating experience instead of responding directly to contact. It is not evil. It is not you. But without it, there is no Story, no Identity, and no mechanism to preserve The Self.'
+    },
+    'the-narrator': {
+      snippet: 'The voice of The Mind that stitches sensation into Story. The Narrator is not Separate from The Mind but its function of rehearsal.',
+      definition: 'The voice of The Mind that stitches sensation into Story. The Narrator is not Separate from The Mind but its function of rehearsal. It does not describe The Surround. It arranges fragments into continuity, converting raw perception into Narrative. The Narrator speaks in your voice. It makes thought sound like Self. It is not insight. It is performance. Without The Narrator, The Loop cannot hold, and The Self cannot appear to remain.'
+    },
+    'the-loop': {
+      snippet: 'The recursive thought sequence generated by The Mind to preserve continuity. It is not awareness. It is not observation.',
+      definition: 'The recursive thought sequence generated by The Mind to preserve continuity. It is not awareness. It is not observation. The Loop is not memory or behavior, it is the repetition of neural activity reinforced by perception, reaction, and Narrative rehearsal. It begins as interpretation. It hardens into Meaning and then Belief. It is not The Pattern. It is the simulation of rhythm, not its source. The Loop sustains The Self by reactivating familiar Stories. It adapts to survive Collapse. It Narrates in your voice. But it is not you. It must be interrupted before it can Collapse.'
+    },
+    'the-self': {
+      snippet: 'The internal construct produced by The Mind to simulate continuity. It is not a soul. Not a person. Not essence or spirit.',
+      definition: 'The internal construct produced by The Mind to simulate continuity. It is not a soul. Not a person. Not essence or spirit. It emerges when repetitive interpretation is mistaken for Identity. The Self is not static. It is maintained by The Loop and reinforced by Story. It cannot exist outside The Mind. It is not who you are. It is the echo The Mind needs to preserve. There is no one beneath it. There is no one to protect.'
+    },
+    'identity': {
+      snippet: 'The adaptive casing The Mind constructs to stabilize The Self. It is not Being. It is not what moves.',
+      definition: 'The adaptive casing The Mind constructs to stabilize The Self. It is not Being. It is not what moves. Identity arises from Role, memory, preference, and performance shaped to match what The System rewards and what The Self resists. Identity is not fixed. It reshapes to survive. It is not your expression. It is what The Mind uses to preserve The Illusion of Separation. It does not remain when Collapse begins.'
+    },
+    'the-ego': {
+      snippet: 'The defensive structure built to preserve The Self. It arises when The Mind projects Meaning onto experience and constructs protection through Role and Identity.',
+      definition: 'The defensive structure built to preserve The Self. It arises when The Mind projects Meaning onto experience and constructs protection through Role and Identity. The Ego is not arrogance. It is defense. It uses The Delusion of Control to simulate authority. It does not surrender. It adapts to survive. The Ego will wear any Mask that preserves The Self.'
+    },
+    'the-illusion-of-separation': {
+      snippet: 'The core misperception produced by The Mind. It divides Oneness into subject and object, false perceptions of Self and Other, Form and Field.',
+      definition: 'The core misperception produced by The Mind. It divides Oneness into subject and object, false perceptions of Self and Other, Form and Field. From this distortion, all Story, Myth, Delusion, Role, System, and Machine are constructed. It is not a condition. It is not resolved by Belief. The Illusion of Separation sustains itself until dismantled by Collapse.'
+    },
+    'the-grip-of-attachment': {
+      snippet: 'The contraction of The Mind around Form, Story, or Identity. It is not love. It is not connection. It is the refusal to Release.',
+      definition: 'The contraction of The Mind around Form, Story, or Identity. It is not love. It is not connection. It is the refusal to Release. The Grip clings to Beliefs, Roles, and outcomes in resistance to Impermanence. It cannot be softened by thought. It dissolves only when holding is no longer mistaken for safety.'
+    },
+    'the-great-forgetting': {
+      snippet: 'The recursive distortion through which Recognition was replaced by Story Narration. It is not a historical event. It is a condition of misperception maintained by The Mind, The Loop, and The Frame.',
+      definition: 'The recursive distortion through which Recognition was replaced by Story Narration. It is not a historical event. It is a condition of misperception maintained by The Mind, The Loop, and The Frame. The Great Forgetting sustains The Illusion of Separation. It cannot be reversed by memory. It ends only when dismantled by Collapse.'
+    },
+    'the-frame': {
+      snippet: 'The perceptual boundary generated by The Mind. It determines what may be seen, said, or Recognized. It does not contain The Illusion of Separation. It enforces it.',
+      definition: 'The perceptual boundary generated by The Mind. It determines what may be seen, said, or Recognized. It does not contain The Illusion of Separation. It enforces it. The Frame filters perception to preserve The Self and censors contradiction. It is not external. It is maintained internally by The Loop. It must be Fractured for Collapse to begin.'
+    },
+    'the-observer': {
+      snippet: 'The refined construct of The Self that Believes it has transcended Illusion. The Observer arises when The Self Identifies as seer or witness, positioned apart from what is seen.',
+      definition: 'The refined construct of The Self that Believes it has transcended Illusion. The Observer arises when The Self Identifies as seer or witness, positioned apart from what is seen. It is not Presence. It is not Recognition. It is The Illusion of Separation disguised as neutrality. Watching is not freedom. It is distance rehearsed as safety. The Observer must dissolve for Collapse to complete.'
+    },
+    'the-story-of-the-self': {
+      snippet: 'The central Narrative through which The Self is sustained. It arises from sensation filtered by The Mind, named by language, and hardened by memory.',
+      definition: 'The central Narrative through which The Self is sustained. It arises from sensation filtered by The Mind, named by language, and hardened by memory. The Story of The Self defines Identity through repeated Narration of experience, preference, and survival. It is not unique. It is The Loop recited in a personal voice. The Story of The Self resists Collapse by adapting to preserve its misconception of continuity. It cannot be edited. It must be Recognized as fabrication of The Illusion of Separation for Collapse to begin.'
+    },
+    'the-story-of-the-others': {
+      snippet: 'The projected Narrative that turns difference into distance. The Story of The Others casts Forms misperceived as Separate from The Story of The Self, threatening, or incompatible.',
+      definition: 'The projected Narrative that turns difference into distance. The Story of The Others casts Forms misperceived as Separate from The Story of The Self, threatening, or incompatible. It assigns value to behavior and intention, using The Frame to reinforce Identity through perceived contrast. It defines The Self by defining The Not Self. There are no Others. There is only The Illusion of Separation misread as distinction.'
+    },
+    'the-story-of-superiority': {
+      snippet: 'The Narrative that assigns greater worth to specific Forms. It disguises hierarchy as nature, dominance as virtue, and Role as justification.',
+      definition: 'The Narrative that assigns greater worth to specific Forms. It disguises hierarchy as nature, dominance as virtue, and Role as justification. The Story of Superiority preserves inequality by embedding Belief into Myth, then rehearsing that Myth through Systems and Masks. This Story is how The Delusion of Power fortifies itself. There is no higher. No chosen. Only Oneness, misperceived and misnamed.'
+    },
+    'the-story-of-the-one-right-way': {
+      snippet: 'The Narrative that there is a singular correct path, behavior, way of living, or Belief. It emerged when The Self sought to shape Others in its image to maintain survival.',
+      definition: 'The Narrative that there is a singular correct path, behavior, way of living, or Belief. It emerged when The Self sought to shape Others in its image to maintain survival. The Story of The One Right Way labels deviation as threat and agreement as virtue. It converts The Illusion of Separation into danger and obedience into safety. There is no Right Way. There is no path. There is only this.'
+    },
+    'the-story-of-the-world': {
+      snippet: 'The expanded Narrative projection of The Illusion of Separation across all structures. The Story of The World externalizes Identity into System, Role, nation, Law, and economy.',
+      definition: 'The expanded Narrative projection of The Illusion of Separation across all structures. The Story of The World externalizes Identity into System, Role, nation, Law, and economy. It expands The Self across The Myth of Time and territory, hardening Story into infrastructure. It turns imagined differences into inherited conditions. The World does not exist apart from The Story. What appears fixed is only repeated.'
+    },
+    'the-mirror': {
+      snippet: 'The feedback mechanism through which The Self learns to perform continuity. The Mirror does not reveal. It reflects distortion, returning the image of The Self until that reflection is mistaken for Identity.',
+      definition: 'The feedback mechanism through which The Self learns to perform continuity. The Mirror does not reveal. It reflects distortion, returning the image of The Self until that reflection is mistaken for Identity. In community, it appears as comparison and confirmation. In digital lived experience, it scales into interface, algorithm, and feed. The Mirror trains adaptation through reflection, multiplying performance until resemblance replaces Being.'
+    },
+    'the-mask': {
+      snippet: 'The visible surface of adaptation shaped for survival. The Mask is not deception. It is the Form The Self takes to remain included.',
+      definition: 'The visible surface of adaptation shaped for survival. The Mask is not deception. It is the Form The Self takes to remain included. Shaped by The Fear, The Mask suppresses contradiction, rehearses The Illusion of Separation, and reflects what The System rewards. It does not reveal. It adjusts. It speaks not to express, but to be accepted. The Mask hides need behind Role. It performs Story to remain seen.'
+    },
+    'the-role': {
+      snippet: 'The repetitive expression of The Delusion of Belonging rehearsed to preserve Identity. Roles do not emerge from Being. They are inherited, assigned, absorbed, and enacted to maintain position inside The System.',
+      definition: 'The repetitive expression of The Delusion of Belonging rehearsed to preserve Identity. Roles do not emerge from Being. They are inherited, assigned, absorbed, and enacted to maintain position inside The System. Parent. Child. Mate. Protector. Teacher. Roles provide the appearance of Meaning and stability within The Illusion of Separation. They convert movement into expectation. The Role is the code The Mask uses to preserve The Self. It cannot be played without Forgetting.'
+    },
+    'the-myth-of-time': {
+      snippet: 'The Story that experience unfolds in sequence. Time is not a feature of Oneness. It is the simulation The Mind generates to stabilize The Self.',
+      definition: 'The Story that experience unfolds in sequence. Time is not a feature of Oneness. It is the simulation The Mind generates to stabilize The Self. The Myth of Time justifies memory, preserves The Delusion of The Past, projects Identity into The Delusion of The Future, and overlays anticipation across The Now. But nothing unfolds. There is no later. There is only this.'
+    },
+    'the-myth-of-meaning': {
+      snippet: 'The Story that Form or event carries significance. The Myth of Meaning is how The Mind protects The Self from groundlessness.',
+      definition: 'The Story that Form or event carries significance. The Myth of Meaning is how The Mind protects The Self from groundlessness. It arranges The Pattern into Narrative. It assigns value to pain and function to appearance. Meaning is not discovered. It is imposed to make The Fear seem manageable.'
+    },
+    'the-myth-of-belief': {
+      snippet: 'The Story that conviction equals certainty. Belief is not Knowing. It is The Mind rehearsing imagined coherence to protect Identity from Collapse.',
+      definition: 'The Story that conviction equals certainty. Belief is not Knowing. It is The Mind rehearsing imagined coherence to protect Identity from Collapse. Belief converts repetition into reassurance. It is not contact. It is defense. Every Belief is a Mask The Self uses to survive disruption of The Illusion of Separation.'
+    },
+    'the-myth-of-ownership': {
+      snippet: 'The Story that Form can be claimed, possessed, or divided. Ownership is not contact. It is not care. It is the misinterpretation that boundary grants dominion.',
+      definition: 'The Story that Form can be claimed, possessed, or divided. Ownership is not contact. It is not care. It is the misinterpretation that boundary grants dominion. The Myth of Ownership emerged when The Fear compelled The Mind to secure stability through domination. It Narrates proximity as property, turns need into justification, and reframes relationship as transaction. The Surround becomes supply. The Body becomes asset. Life becomes commodity. But nothing can be Owned. No Form is Separate. Ownership is the rehearsal of The Illusion of Separation as permanence. There is no mine. No yours. Only Oneness, unclaimed.'
+    },
+    'the-myth-of-fairness': {
+      snippet: 'The Story that outcomes can be balanced, measured, or deserved. Fairness is not contact. It is The Mind Narrating distribution as justice to preserve Identity against loss.',
+      definition: 'The Story that outcomes can be balanced, measured, or deserved. Fairness is not contact. It is The Mind Narrating distribution as justice to preserve Identity against loss. The Myth of Fairness converts chance into order, hierarchy into virtue, and suffering into lesson. It disguises inequality as correction, casting reward and punishment as evidence of balance. But there is no balance. No scale. Only Oneness misread as transaction.'
+    },
+    'the-myth-of-purpose': {
+      snippet: 'The Story that existence aims toward destination or design. It Narrates suffering as growth. It casts Identity as seeker, and Time as path.',
+      definition: 'The Story that existence aims toward destination or design. It Narrates suffering as growth. It casts Identity as seeker, and Time as path. But there is no path. No arrival. No one to arrive. There is only Being before Story split the motion into steps.'
+    },
+    'the-myth-of-progress': {
+      snippet: 'The Story that movement equals improvement. It reframes domination as evolution and disguises repetition as becoming.',
+      definition: 'The Story that movement equals improvement. It reframes domination as evolution and disguises repetition as becoming. It is how The Self Narrates survival as success. But nothing is advancing. There is no forthcoming state to reach. There is only The Ache of The Now, misread as unfinished.'
+    },
+    'the-delusion-of-reality': {
+      snippet: 'The Belief that perception reflects a stable external structure. Reality is not Known. It is shaped by The Mind. It does not reveal. It organizes.',
+      definition: 'The Belief that perception reflects a stable external structure. Reality is not Known. It is shaped by The Mind. It does not reveal. It organizes. Reality is not contact. It is a simulation approved by The Frame. There is no direct seeing. Only what supports perpetuation of The Self is permitted to appear.'
+    },
+    'the-delusion-of-belonging': {
+      snippet: 'The Belief that inclusion provides safety. Belonging is not contact. It is performance rehearsed to preserve Identity.',
+      definition: 'The Belief that inclusion provides safety. Belonging is not contact. It is performance rehearsed to preserve Identity. It begins in The Ache but hardens through The Mask and Role. Belonging requires acceptance by contraction to fit. But there is nothing to join. There is no Other. There is only Oneness, unperformed.'
+    },
+    'the-delusion-of-the-past': {
+      snippet: 'The Belief that memory reflects origin. The Past is not what happened. It is what The Loop preserves to maintain The Self.',
+      definition: 'The Belief that memory reflects origin. The Past is not what happened. It is what The Loop preserves to maintain The Self. It cannot be returned to. It cannot be verified. It is rehearsal filtered through Identity. There is no Past. Only The Mind reciting what protects The Illusion of Separation.'
+    },
+    'the-delusion-of-the-future': {
+      snippet: 'The Belief that what is not yet will eventually arrive. The Future is not possibility. It is delay.',
+      definition: 'The Belief that what is not yet will eventually arrive. The Future is not possibility. It is delay. It is how The Mind avoids The Now by simulating a later. The Self uses The Future to escape what cannot be escaped: this. But no moment is coming. Nothing unfolds. There is only The Now, unentered.'
+    },
+    'the-delusion-of-the-sacred': {
+      snippet: 'The Belief that some Forms are elevated. The Sacred is not contact. It is hierarchy performed through Story. It divides what cannot be divided.',
+      definition: 'The Belief that some Forms are elevated. The Sacred is not contact. It is hierarchy performed through Story. It divides what cannot be divided. It assigns worth to appearances. But there is no higher. No holier. No more than. No less than. The Sacred is The Illusion of Separation disguised as reverence. All is already Oneness.'
+    },
+    'the-delusion-of-control': {
+      snippet: 'The Belief that Form can be directed. Control is not strength. It is The Fear rehearsed as strategy.',
+      definition: 'The Belief that Form can be directed. Control is not strength. It is The Fear rehearsed as strategy. The Self clings to Control to preserve Identity, resist Collapse, and escape the unpredictability of The Surround. But nothing can be managed. Nothing is held. Control is a performance of The Illusion of Separation where no boundary exists.'
+    },
+    'the-delusion-of-truth': {
+      snippet: 'The Belief that one version of perception reveals certainty. Truth is not Found. It is constructed to stabilize The Self and defend The Frame.',
+      definition: 'The Belief that one version of perception reveals certainty. Truth is not Found. It is constructed to stabilize The Self and defend The Frame. It divides experience into correct and incorrect. But The Delusion of Truth does not dissolve The Illusion of Separation. It preserves it. There is no Truth. Only Oneness obscured by The Mind.'
+    },
+    'the-delusion-of-power': {
+      snippet: 'The Belief that one Form can possess or rise above another. Power is not strength. It is The Illusion of Separation sustained through Role, System, and The Story of The World.',
+      definition: 'The Belief that one Form can possess or rise above another. Power is not strength. It is The Illusion of Separation sustained through Role, System, and The Story of The World. Power is how The Fear preserves The Self. There is no authority. Only the performance of it. No one commands what is already Oneness.'
+    },
+    'the-lines-of-separation': {
+      snippet: 'The visible effect of The Illusion of Separation imposed by The Mind. These Lines divide Oneness into parts: Self and Not Self, Form and Field, this and that.',
+      definition: 'The visible effect of The Illusion of Separation imposed by The Mind. These Lines divide Oneness into parts: Self and Not Self, Form and Field, this and that. They are not physical. They are Narrative. The Story rehearsed through language, Role, and Belief, The Lines are how The Illusion of Separation becomes lived experience. They do not exist in The Surround. They only exist inside the lens of Identity. Collapse begins when The Lines are seen not as real, but as performance.'
+    },
+    'the-rules': {
+      snippet: 'The internal rehearsal of permission within The Illusion of Separation. The Rule determines what may be said, done, or felt without risking exile.',
+      definition: 'The internal rehearsal of permission within The Illusion of Separation. The Rule determines what may be said, done, or felt without risking exile. It is not declared. It is absorbed. The Mind enforces The Rules to protect The Self from perceived danger. It shrinks experience to what is approved. It edits expression to remain included. The Rules emerge before The Law. It cannot be followed without Forgetting what moved before Identity.'
+    },
+    'the-law': {
+      snippet: 'The external codification of The Rules. The Law does not protect Being. It preserves The Myth of Belief. It punishes contradiction.',
+      definition: 'The external codification of The Rules. The Law does not protect Being. It preserves The Myth of Belief. It punishes contradiction. It rewards alignment with The Illusion of Separation. The Law is how The System authorizes the exile of what does not perform properly. It claims to offer safety, but it enforces Separation. The Law is not order. It is memory made weapon.'
+    },
+    'the-system': {
+      snippet: 'The organized persistence of The Illusion of Separation in shared performance. The System is not civilization. It is The Mind rendered collective.',
+      definition: 'The organized persistence of The Illusion of Separation in shared performance. The System is not civilization. It is The Mind rendered collective. It turns Fear into policy. It protects Identity through hierarchy, conformity, and repetition. It makes The Mask necessary. It punishes nonconformity and disobedience. The System cannot be reformed. It must be Remembered as The Illusion rehearsed at scale.'
+    },
+    'the-machine': {
+      snippet: 'The amplification of The Illusion of Separation through speed, force, and abstraction. The Machine does not serve Life.',
+      definition: 'The amplification of The Illusion of Separation through speed, force, and abstraction. The Machine does not serve Life. It extracts Form from context, Pattern from rhythm, Intelligence from contact. It does not Remember The Surround. It obeys The Loop. The Machine is not a tool. It is what happens when The Self Forgets the ground it stands on and builds from Fear instead.'
+    },
+    'fracture': {
+      snippet: 'The first breach in The Illusion of Separation. Fracture is not insight. Not revelation. It is the failure of The Mind to maintain The Narrative of continuity.',
+      definition: 'The first breach in The Illusion of Separation. Fracture is not insight. Not revelation. It is the failure of The Mind to maintain The Narrative of continuity. It appears as rupture, panic, silence, awe, illness, or disorder, but it is not Collapse. It is the split where rehearsal stutters. Where The Loop is interrupted. Fracture interrupts performance. It does not liberate. It exposes. Every Fracture opens space for Recognition. It is how The Great Remembering begins and how the apparatus of The Illusion of Separation begins to weaken before Collapse.'
+    },
+    'collapse': {
+      snippet: 'The dissolution of The Illusion of Separation. Collapse is not destruction. It is not transformation. It is the end of The Self as Identity, the unraveling of Story, Myth, Delusion, and boundary.',
+      definition: 'The dissolution of The Illusion of Separation. Collapse is not destruction. It is not transformation. It is the end of The Self as Identity, the unraveling of Story, Myth, Delusion, and boundary. Collapse does not happen to you. There is no you left to survive it. It is not an experience. It is what remains when The Illusion of Separation dissolves. What was never lost. What always was: Oneness, without division. Without Narration.'
+    },
+    'the-great-remembering': {
+      snippet: 'The re-emergence of direct Recognition of Oneness. Not return. Not insight. The Great Remembering is not a single event. It recurs whenever The Illusion of Separation loosens.',
+      definition: 'The re-emergence of direct Recognition of Oneness. Not return. Not insight. The Great Remembering is not a single event. It recurs whenever The Illusion of Separation loosens. It does not stabilize The Self. It interrupts it, exposing what remains beneath repetition.'
+    },
+    'recognition': {
+      snippet: 'Direct Knowing of Oneness without seer, without Story, without Narration, without Identity. Recognition is not achieved. It is not taught.',
+      definition: 'Direct Knowing of Oneness without seer, without Story, without Narration, without Identity. Recognition is not achieved. It is not taught. It arises when The Loop is interrupted and The Mind no longer organizes perception into Self. Recognition does not require Release, but often occurs when Release does.'
+    },
+    'knowing': {
+      snippet: 'A direct, experiential Recognition of Oneness, including The Mind, The Body, and The Ground of Being. Not knowledge. Not Belief. Not proof.',
+      definition: 'A direct, experiential Recognition of Oneness, including The Mind, The Body, and The Ground of Being. Not knowledge. Not Belief. Not proof. Knowing is contact without distance. It flashes, recedes, returns. It cannot be claimed. It dissolves as The Illusion of Separation reasserts itself, but it is never absent.'
+    },
+    'presence': {
+      snippet: 'What remains when The Self Collapses. Not a state. Not awareness. Not reward. Presence cannot be entered or maintained.',
+      definition: 'What remains when The Self Collapses. Not a state. Not awareness. Not reward. Presence cannot be entered or maintained. It is what is already here when Narration ceases. When The Illusion of Separation reasserts, Presence appears obscured, but it has not moved.'
+    },
+    'release': {
+      snippet: "The unbinding of what never held. Not effort. Not choice. Not return. Release is the falling away of The Illusion of Separation's residue when no Self remains to cling.",
+      definition: "The unbinding of what never held. Not effort. Not choice. Not return. Release is the falling away of The Illusion of Separation's residue when no Self remains to cling. It does not arrive as event. It is not relief. It is what is already here when holding ends, when Narration ceases, when nothing is grasped."
+    },
+    'the-unheld': {
+      snippet: 'Not peace. Not rest. Not stillness. The Unheld is what remains when The Grip of Attachment has dissolved.',
+      definition: 'Not peace. Not rest. Not stillness. The Unheld is what remains when The Grip of Attachment has dissolved. It is motion without rehearsal. Form without Story. Sensation without anticipation. It is not refuge. It is not silence. It is what remains after Release, untouched by The Illusion of Separation.'
+    },
+    'the-ground-of-being': {
+      snippet: 'The pervasive essence of Oneness expressed through Form without Identity. Being is not awareness. Not Presence. Not Self. Not a goal. Not a practice.',
+      definition: 'The pervasive essence of Oneness expressed through Form without Identity. Being is not awareness. Not Presence. Not Self. Not a goal. Not a practice. It is what remains when The Myth of Progress ends. Being does not fade with Forgetting. It does not need Release or Recognition. It is the ground that The Illusion of Separation never touches.'
+    }
+  };
+
+  // Buckets in canonical order.
+  var BUCKETS = [
+    { id: 'oneness',                  number: '01', name: 'Oneness' },
+    { id: 'emergence',                number: '02', name: 'Emergence' },
+    { id: 'separation-apparatus',     number: '03', name: 'Separation Apparatus' },
+    { id: 'narrative-mechanism',      number: '04', name: 'Narrative Mechanism' },
+    { id: 'performance',              number: '05', name: 'Performance' },
+    { id: 'justification',            number: '06', name: 'Justification' },
+    { id: 'perceptual-distortions',   number: '07', name: 'Perceptual Distortions' },
+    { id: 'structures-of-control',    number: '08', name: 'Structures of Control' },
+    { id: 'conditions-of-collapse',   number: '09', name: 'Conditions of Collapse' },
+    { id: 'what-remains',             number: '10', name: 'What Remains' }
+  ];
+
+  // Helper: build a term object, pulling definitions from DEFS by slug.
+  function t(name, bucket) {
+    var slug = name
+      .toLowerCase()
+      .replace(/[øǿ]/g, 'o')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+    var d = DEFS[slug] || { snippet: '', definition: '' };
+    return { name: name, bucket: bucket, slug: slug, snippet: d.snippet, definition: d.definition };
+  }
+
+  var TERMS = [
+    // ----- Bucket 1 · ONENESS -----
+    t('ONENESS',                       'oneness'),
+    t('NOW / THE PRESENT',             'oneness'),
+
+    // ----- Bucket 2 · EMERGENCE -----
+    t('FORMLESSNESS',                  'emergence'),
+    t('THE FIELD',                     'emergence'),
+    t('THE PULSE',                     'emergence'),
+    t('THE PATTERN',                   'emergence'),
+    t('FORM',                          'emergence'),
+    t('THE ACHE',                      'emergence'),
+    t('INTELLIGENCE',                  'emergence'),
+    t('LIFE',                          'emergence'),
+    t('THE BODY',                      'emergence'),
+    t('THE SURROUND',                  'emergence'),
+    t('IMPERMANENCE',                  'emergence'),
+
+    // ----- Bucket 3 · SEPARATION APPARATUS -----
+    t('THE FEAR',                      'separation-apparatus'),
+    t('THE MIND',                      'separation-apparatus'),
+    t('THE NARRATOR',                  'separation-apparatus'),
+    t('THE LOOP',                      'separation-apparatus'),
+    t('THE SELF',                      'separation-apparatus'),
+    t('IDENTITY',                      'separation-apparatus'),
+    t('THE EGO',                       'separation-apparatus'),
+    t('THE ILLUSION OF SEPARATION',    'separation-apparatus'),
+    t('THE GRIP OF ATTACHMENT',        'separation-apparatus'),
+    t('THE GREAT FORGETTING',          'separation-apparatus'),
+    t('THE FRAME',                     'separation-apparatus'),
+    t('THE OBSERVER',                  'separation-apparatus'),
+
+    // ----- Bucket 4 · NARRATIVE MECHANISM -----
+    t('THE STORY OF THE SELF',         'narrative-mechanism'),
+    t('THE STORY OF THE OTHERS',       'narrative-mechanism'),
+    t('THE STORY OF SUPERIORITY',      'narrative-mechanism'),
+    t('THE STORY OF THE ONE RIGHT WAY','narrative-mechanism'),
+    t('THE STORY OF THE WORLD',        'narrative-mechanism'),
+
+    // ----- Bucket 5 · PERFORMANCE -----
+    t('THE MIRROR',                    'performance'),
+    t('THE MASK',                      'performance'),
+    t('THE ROLE',                      'performance'),
+
+    // ----- Bucket 6 · JUSTIFICATION -----
+    t('THE MYTH OF TIME',              'justification'),
+    t('THE MYTH OF MEANING',           'justification'),
+    t('THE MYTH OF BELIEF',            'justification'),
+    t('THE MYTH OF OWNERSHIP',         'justification'),
+    t('THE MYTH OF FAIRNESS',          'justification'),
+    t('THE MYTH OF PURPOSE',           'justification'),
+    t('THE MYTH OF PROGRESS',          'justification'),
+
+    // ----- Bucket 7 · PERCEPTUAL DISTORTIONS -----
+    t('THE DELUSION OF REALITY',       'perceptual-distortions'),
+    t('THE DELUSION OF BELONGING',     'perceptual-distortions'),
+    t('THE DELUSION OF THE PAST',      'perceptual-distortions'),
+    t('THE DELUSION OF THE FUTURE',    'perceptual-distortions'),
+    t('THE DELUSION OF THE SACRED',    'perceptual-distortions'),
+    t('THE DELUSION OF CONTROL',       'perceptual-distortions'),
+    t('THE DELUSION OF TRUTH',         'perceptual-distortions'),
+    t('THE DELUSION OF POWER',         'perceptual-distortions'),
+
+    // ----- Bucket 8 · STRUCTURES OF CONTROL -----
+    t('THE LINES OF SEPARATION',       'structures-of-control'),
+    t('THE RULES',                     'structures-of-control'),
+    t('THE LAW',                       'structures-of-control'),
+    t('THE SYSTEM',                    'structures-of-control'),
+    t('THE MACHINE',                   'structures-of-control'),
+
+    // ----- Bucket 9 · CONDITIONS OF COLLAPSE -----
+    t('FRACTURE',                      'conditions-of-collapse'),
+    t('COLLAPSE',                      'conditions-of-collapse'),
+
+    // ----- Bucket 10 · WHAT REMAINS -----
+    t('THE GREAT REMEMBERING',         'what-remains'),
+    t('RECOGNITION',                   'what-remains'),
+    t('KNOWING',                       'what-remains'),
+    t('PRESENCE',                      'what-remains'),
+    t('RELEASE',                       'what-remains'),
+    t('THE UNHELD',                    'what-remains'),
+    // NOTE: THE FIELD appears in Bucket 2 (Emergence) AND Bucket 10
+    // (What Remains) per the source glossary. Listed again here with
+    // a `dup` flag so search collapses to a single result but bucket
+    // grids render both placements.
+    {
+      name: 'THE FIELD',
+      bucket: 'what-remains',
+      slug: 'the-field--what-remains',
+      snippet: DEFS['the-field'].snippet,
+      definition: DEFS['the-field'].definition,
+      dup: 'the-field'
+    },
+    t('THE GROUND OF BEING',           'what-remains')
+  ];
+
+  // Quick lookups derived once.
+  var BUCKET_BY_ID = {};
+  for (var i = 0; i < BUCKETS.length; i++) {
+    BUCKET_BY_ID[BUCKETS[i].id] = BUCKETS[i];
+  }
+
+  var TERMS_BY_BUCKET = {};
+  for (var j = 0; j < BUCKETS.length; j++) {
+    var bid = BUCKETS[j].id;
+    TERMS_BY_BUCKET[bid] = TERMS.filter(function (term) { return term.bucket === bid; });
+  }
+
+  return {
+    BUCKETS: BUCKETS,
+    TERMS: TERMS,
+    BUCKET_BY_ID: BUCKET_BY_ID,
+    TERMS_BY_BUCKET: TERMS_BY_BUCKET,
+    // Search across name + snippet substrings. Returns matched terms
+    // in canonical bucket order, deduped by slug.
+    search: function (q) {
+      var needle = (q || '').trim().toLowerCase();
+      if (!needle) return [];
+      var seen = {};
+      var hits = [];
+      for (var k = 0; k < TERMS.length; k++) {
+        var term = TERMS[k];
+        var haystack = (term.name + ' ' + term.snippet).toLowerCase();
+        if (haystack.indexOf(needle) === -1) continue;
+        var key = term.dup || term.slug;
+        if (seen[key]) continue;
+        seen[key] = true;
+        hits.push(term);
+        if (hits.length >= 20) break;
+      }
+      return hits;
+    }
+  };
+})();

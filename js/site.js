@@ -270,19 +270,19 @@
   const editionData = {
     day: {
       title: 'DAY EDITION',
-      cover: '/img/THE_BOOK_OF_ONENESS_Book_Cover_DAY_EDITION%3DNEW%20DESIGN.png'
+      cover: '/img/cover-day.jpg'
     },
     night: {
       title: 'NIGHT EDITION',
-      cover: '/img/THE_BOOK_OF_ONENESS_Book_Cover_NIGHT_EDITION%3DNEW%20DESIGN.png'
+      cover: '/img/cover-night.jpg'
     },
     ebook: {
       title: 'EBOOK EDITION',
-      cover: '/img/THE_BOOK_OF_ONENESS_Book_Cover_EBOOK_EDITION%3DNEW%20DESIGN.png'
+      cover: '/img/cover-ebook.jpg'
     },
     audio: {
       title: 'AUDIOBOOK EDITION',
-      cover: '/img/THE_BOOK_OF_ONENESS_Book_Cover_AUDIOBOOK_EDITION%3DNEW%20DESIGN.png'
+      cover: '/img/cover-audiobook.jpg'
     }
   };
 

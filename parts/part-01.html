@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PART I · THE FIRST STIRRING — THE BOOK OF ONENESS</title>
+<meta name="description" content="Part I of THE BOOK OF ONENESS by [MIRRØR]. The First Stirring. Fractures 1–14.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../glossary-search.css">
+
+<style>
+/* =============================================================
+   PART PAGE — shared chrome with the home page (subset).
+   Template for parts/part-NN.html.
+   Per-part data is set as CSS custom properties on <body data-part>
+   so the same stylesheet renders any of the 20 Parts.
+   ============================================================= */
+:root {
+  /* Dark void surface ladder */
+  --void:    #0A0A0A;
+  --void-2:  #0E0E0E;
+  --void-3:  #131313;
+  --void-4:  #181818;
+
+  /* Foreground ladder */
+  --fg:        #F3F3F3;
+  --fg-2:     #C8C8C8;
+  --fg-muted: #666666;
+  --fg-line:  #2A2A2A;
+
+  /* Brand signal */
+  --yellow:    #FFE000;
+  --pink:      #FF2D6F;
+  --signal-cyan:  #00C2C7;
+  --signal-violet: #A78BFA;
+  --signal-green: #4ADE80;
+
+  /* Hairlines */
+  --hairline:        rgba(255,255,255,0.08);
+  --hairline-strong: rgba(255,255,255,0.18);
+
+  /* Type */
+  --f-head:    "Space Grotesk", system-ui, sans-serif;
+  --f-display: "Abril Fatface", "Times New Roman", serif;
+  --f-mono:    "JetBrains Mono", ui-monospace, monospace;
+  --f-body:    "Space Grotesk", system-ui, sans-serif;
+
+  /* Layout */
+  --max-w:     1440px;
+  --gutter:    clamp(20px, 4vw, 56px);
+  --section-y: clamp(36px, 5vw, 70px);
+
+  /* Motion */
+  --dur:      240ms;
+  --dur-fast: 140ms;
+  --ease:     cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Global header sizes — same on every page so the fixed nav +
+     search bar dimensions stay in sync across the site. */
+  --nav-h:     68px;
+  --header-h:  var(--nav-h);
+
+  /* Glossary accent (shared with the home page glossary section,
+     used here for the search hit bucket eyebrows). */
+  --azure:     #4D8AFF;
+  --azure-rgb: 77,138,255;
+  --gold:      #C8A96E;
+
+  /* Default per-part arc accent (cyan = Fractures, free).
+     Overridden by [data-arc="collapse"] on <body> for Parts XIII–XX. */
+  --arc-rgb: 0,194,199;
+  --arc-hex: #00C2C7;
+}
+body[data-arc="collapse"] {
+  --arc-rgb: 255,45,111;
+  --arc-hex: #FF2D6F;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: var(--header-h); }
+body {
+  background: var(--void);
+  color: var(--fg);
+  font-family: var(--f-body);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv11";
+  overflow-x: hidden;
+}
+
+/* Faint film grain across the whole page — same texture as the home. */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 70% at 50% 0%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 70%);
+}
+
+a { color: inherit; text-decoration: none; }
+
+.container {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+  position: relative;
+  z-index: 1;
+}
+
+/* ===========================================================
+   TOP NAV + SEARCH BAR + BREADCRUMB
+   ===========================================================
+   Same chrome as every other page on the site: fixed nav with all
+   links + global search bar below + a thin breadcrumb row that
+   anchors the visitor in the Part context. The legacy "BACK TO
+   EXPLORE" pill moved from the nav into this breadcrumb row.
+   =========================================================== */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: rgba(10,10,10,0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--hairline);
+  z-index: 100;
+}
+.nav__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 100%;
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.nav__brand {
+  font-family: var(--f-body);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+.nav__links {
+  display: flex; gap: 32px;
+  list-style: none; padding: 0; margin: 0;
+}
+.nav__links a {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  transition: color var(--dur-fast) var(--ease);
+}
+.nav__links a:hover { color: var(--yellow); }
+/* Active-section highlight inherits this part's arc color, so on
+   Collapse parts the Explore link reads pink, on Fractures cyan. */
+.nav__links a.is-active { color: var(--arc-hex); }
+.nav__cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--f-mono);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--fg);
+  background: var(--pink);
+  padding: 12px 18px;
+  transition: background var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+.nav__cta:hover {
+  background: #FF4F88;
+  box-shadow: 0 0 0 1px var(--pink), 0 6px 16px -6px rgba(255,45,111,0.55);
+}
+.nav__cta .arr-ico { width: 14px; height: 14px; flex-shrink: 0; }
+@media (max-width: 800px) { .nav__links { display: none; } }
+
+/* ----- SEARCH BAR (persistent strip below nav) ----- */
+.search-bar {
+  position: fixed; top: var(--nav-h); left: 0; right: 0;
+  height: var(--search-h);
+  background: rgba(5,5,5,0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--hairline);
+  z-index: 99;
+}
+.search-bar__inner {
+  display: flex; align-items: center;
+  height: 100%;
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--gutter);
+  gap: 18px;
+}
+.search-bar__eyebrow {
+  font-family: var(--f-mono);
+  font-size: 10.5px; font-weight: 500;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--fg-muted);
+  white-space: nowrap; flex-shrink: 0;
+}
+.search-bar__eyebrow .slash { color: var(--pink); margin-right: 6px; }
+.search-bar__prompt {
+  font-family: var(--f-mono);
+  font-size: 13px; color: var(--pink);
+  flex-shrink: 0; margin-right: -8px; font-weight: 500;
+}
+.search-bar__input {
+  flex: 1; min-width: 0;
+  background: transparent; border: 0; outline: 0;
+  color: var(--fg);
+  font-family: var(--f-mono); font-size: 13px;
+  letter-spacing: 0.04em; height: 100%;
+}
+.search-bar__input::placeholder { color: var(--fg-muted); letter-spacing: 0.04em; text-transform: none; }
+.search-bar__input::-webkit-search-cancel-button { display: none; }
+.search-bar__kbd {
+  font-family: var(--f-mono); font-size: 10px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--fg-muted);
+  border: 1px solid var(--hairline-strong);
+  padding: 4px 8px; white-space: nowrap; flex-shrink: 0;
+}
+.search-bar:focus-within .search-bar__eyebrow .slash { color: var(--gold); }
+.search-bar:focus-within { border-bottom-color: rgba(200,169,110,0.4); }
+.search-bar__results {
+  position: absolute; top: var(--search-h); left: 50%;
+  transform: translateX(-50%);
+  width: 100%; max-width: var(--max-w);
+  padding: 0 var(--gutter);
+  pointer-events: none; opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.search-bar.is-open .search-bar__results { opacity: 1; pointer-events: auto; }
+.search-bar__results-inner {
+  background: rgba(5,5,5,0.98);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--hairline-strong); border-top: 0;
+  max-height: 60vh; overflow-y: auto;
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,0.9);
+}
+.search-bar__results-empty {
+  padding: 18px 22px;
+  font-family: var(--f-mono); font-size: 11px;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.search-bar__results-empty .slash { color: var(--pink); margin-right: 8px; }
+.search-bar__results-meta {
+  padding: 12px 22px;
+  font-family: var(--f-mono); font-size: 9.5px;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--fg-muted);
+  border-bottom: 1px solid var(--hairline);
+}
+.search-bar__results-meta b { color: var(--yellow); font-weight: 500; }
+.search-hit {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  gap: 24px; align-items: baseline;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--hairline);
+  text-decoration: none; color: var(--fg);
+  transition: background var(--dur-fast) var(--ease);
+}
+.search-hit:last-child { border-bottom: 0; }
+.search-hit:hover, .search-hit.is-focused { background: rgba(255,224,0,0.06); }
+.search-hit__bucket {
+  font-family: var(--f-mono); font-size: 9.5px;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--azure); white-space: nowrap;
+}
+.search-hit__name {
+  font-family: var(--f-head); font-weight: 700;
+  font-size: 14px; letter-spacing: 0.02em;
+  text-transform: uppercase; color: var(--fg); min-width: 0;
+}
+.search-hit__name mark { background: rgba(255,224,0,0.22); color: var(--yellow); padding: 0 2px; }
+.search-hit__snip {
+  font-family: var(--f-body); font-size: 12px;
+  color: var(--fg-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 480px; justify-self: end;
+}
+@media (max-width: 800px) {
+  .search-bar__eyebrow, .search-bar__kbd { display: none; }
+  .search-bar__inner { gap: 10px; }
+  .search-hit { grid-template-columns: 1fr; gap: 6px; padding: 14px 18px; }
+  .search-hit__snip { white-space: normal; max-width: none; justify-self: start; }
+}
+
+/* ----- BREADCRUMB ROW -----
+   Sits directly under the search bar. Replaces the legacy in-nav
+   "BACK TO EXPLORE" pill with a proper Home / Index / Part trail so
+   the visitor can hop anywhere without needing the back button. */
+.crumbs {
+  position: relative;
+  background: rgba(10,10,10,0.4);
+  border-bottom: 1px solid var(--hairline);
+  margin-top: var(--header-h); /* clear the fixed nav + search bar */
+}
+.crumbs__inner {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 14px var(--gutter);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  flex-wrap: wrap;
+}
+.crumbs__trail {
+  display: flex; align-items: center;
+  gap: 12px; flex-wrap: wrap; min-width: 0;
+}
+.crumbs__trail a { color: var(--fg-2); transition: color var(--dur-fast) var(--ease); }
+.crumbs__trail a:hover { color: var(--arc-hex); }
+.crumbs__trail .sep { color: var(--fg-line); }
+.crumbs__trail .active { color: var(--arc-hex); }
+.crumbs__back {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--fg-2);
+}
+.crumbs__back .arr { transition: transform var(--dur-fast) var(--ease); display: inline-block; }
+.crumbs__back:hover { color: var(--arc-hex); }
+.crumbs__back:hover .arr { transform: translateX(-4px); }
+.crumbs__here {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.26em;
+  color: var(--fg-2);
+}
+.crumbs__here .num { color: var(--arc-hex); margin-right: 6px; font-weight: 700; }
+
+/* ===========================================================
+   HERO — full-width slab. No cover art; the Part numeral + title
+   carry it. Centered cyan glow bleeds behind the title.
+   =========================================================== */
+.part-hero {
+  padding: clamp(56px, 8vw, 120px) 0 clamp(52px, 6.5vw, 96px);
+  position: relative;
+  border-bottom: 1px solid var(--hairline);
+}
+.part-hero__inner {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  max-width: 1000px;
+}
+/* Strong centered radial bloom behind the title — same recipe as
+   the FRACTURE / COLLAPSE banners on the home page. Breathes on a
+   slow 5.5s cycle. Cyan for free parts, pink for collapses (the
+   accent flips via --arc-rgb on <body data-arc="collapse">). */
+.part-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 120% at 32% 55%,
+      rgba(var(--arc-rgb), 0.40) 0%,
+      rgba(var(--arc-rgb), 0.20) 28%,
+      rgba(var(--arc-rgb), 0.06) 58%,
+      rgba(0,0,0,0) 82%);
+  transform-origin: 32% 55%;
+  animation: hero-bloom 4.2s ease-in-out infinite;
+}
+@keyframes hero-bloom {
+  0%, 100% { opacity: 0.70; transform: scale(0.98); }
+  50%      { opacity: 1.05; transform: scale(1.06); }
+}
+.part-hero__eyebrow {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-bottom: clamp(22px, 2.4vw, 32px);
+  display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap;
+}
+.part-hero__eyebrow .arc-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--arc-hex);
+  box-shadow: 0 0 12px var(--arc-hex);
+}
+/* Plain [MIRRØR] lockup inside the small eyebrow context. The chrome
+   metallic treatment is reserved for larger marks (hero, footer) —
+   at 11px mono it washes out unreadably. Tighter letter-spacing on
+   the lockup so the brackets sit right against the word, the way
+   [MIRRØR] is written in the manuscript. */
+.part-hero__eyebrow .mirror-lockup {
+  letter-spacing: 0;
+  margin-left: 4px;
+}
+.part-hero__eyebrow .brk {
+  color: var(--fg-muted);
+  font-weight: 400;
+}
+.part-hero__numeral {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(36px, 4.5vw, 64px);
+  line-height: 0.95;
+  color: var(--fg);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin: 0 0 clamp(6px, 0.6vw, 12px);
+}
+.part-hero__title {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(64px, 11.5vw, 168px);
+  line-height: 0.92;
+  color: var(--arc-hex);
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  margin: 0 0 clamp(24px, 3vw, 40px);
+  text-shadow: 0 0 48px rgba(var(--arc-rgb), 0.32);
+  animation: title-breathe 4.2s ease-in-out infinite;
+}
+.part-hero__title .lf { display: block; }
+@keyframes title-breathe {
+  0%, 100% { text-shadow: 0 0 40px rgba(var(--arc-rgb), 0.28); }
+  50%      { text-shadow:
+               0 0 68px rgba(var(--arc-rgb), 0.60),
+               0 0 140px rgba(var(--arc-rgb), 0.28); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .part-hero::before, .part-hero__title { animation: none; }
+}
+
+/* (Glitch chromatic-split removed — it was bisecting the title
+   into cyan-top / red-bottom halves and reading as a glitch bug,
+   not a glitch effect. The hero now leans entirely on the breathing
+   radial bloom for motion.) */
+.part-hero__count {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  padding: 10px 16px;
+  border: 1px solid rgba(var(--arc-rgb), 0.45);
+  background: rgba(var(--arc-rgb), 0.06);
+}
+.part-hero__count .num { color: var(--arc-hex); font-weight: 700; }
+
+/* ===========================================================
+   BRAND LOCKUP — [MIRRØR] chrome treatment (subset of home page)
+   =========================================================== */
+.brand-mirror {
+  background: linear-gradient(
+    178deg,
+    #ffffff 0%,
+    #d8dde6 22%,
+    #f4f6fa 44%,
+    #8c93a0 58%,
+    #c8ced8 78%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+          color: transparent;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 18px rgba(220,228,240,0.15);
+}
+.brand-mirror .brk { opacity: 0.55; font-weight: 400; }
+.brand-pub {
+  color: var(--fg-2);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  font-size: 0.94em;
+}
+
+/* ===========================================================
+   SECTION SHELL — reused below the hero
+   =========================================================== */
+.section {
+  padding: var(--section-y) 0;
+  border-top: 1px solid var(--hairline);
+  position: relative;
+}
+.section--alt { background: var(--void-2); }
+.section__head {
+  display: flex; flex-direction: column;
+  gap: 8px;
+  margin-bottom: clamp(28px, 3.6vw, 48px);
+}
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  display: flex; align-items: center; gap: 10px;
+}
+.eyebrow .slash { color: var(--arc-hex); }
+.eyebrow .num { color: var(--arc-hex); }
+.section__title {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: clamp(28px, 3.4vw, 44px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+.section__title .accent { color: var(--arc-hex); }
+.section__sub {
+  font-family: var(--f-body);
+  font-size: clamp(14px, 1.1vw, 16px);
+  color: var(--fg-muted);
+  margin: 8px 0 0;
+  max-width: 60ch;
+  line-height: 1.55;
+}
+
+/* ===========================================================
+   FRACTURE INDEX GRID
+   =========================================================== */
+.fractures-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(12px, 1.4vw, 20px);
+}
+@media (max-width: 900px) { .fractures-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .fractures-grid { grid-template-columns: 1fr; } }
+
+.fracture-card {
+  position: relative;
+  display: flex; flex-direction: column;
+  gap: 14px;
+  padding: clamp(18px, 2vw, 24px);
+  background: var(--void-3);
+  border: 1px solid var(--hairline);
+  text-decoration: none;
+  color: var(--fg);
+  transition: border-color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              transform var(--dur) var(--ease);
+  overflow: hidden;
+  min-height: 180px;
+}
+.fracture-card:hover {
+  border-color: var(--arc-hex);
+  background:
+    linear-gradient(rgba(var(--arc-rgb),0.08), rgba(var(--arc-rgb),0.08)),
+    var(--void-4);
+  box-shadow:
+    0 0 0 1px rgba(var(--arc-rgb),0.40),
+    0 26px 64px -16px rgba(var(--arc-rgb),0.45);
+  transform: translateY(-3px) scale(1.008);
+}
+.fracture-card__top {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+.fracture-card__num {
+  color: var(--arc-hex);
+  font-weight: 700;
+}
+.fracture-card__status { color: var(--fg-muted); }
+.fracture-card__title {
+  font-family: var(--f-head);
+  font-weight: 600;
+  font-size: clamp(18px, 1.6vw, 23px);
+  line-height: 1.12;
+  letter-spacing: -0.005em;
+  color: var(--fg);
+  margin: 0;
+  text-transform: uppercase;
+  padding-bottom: 6px;
+}
+/* Status indicator on each card — live (cyan) vs upcoming (muted).
+   The "// LIVE" dot picks up the arc-hex so it works for both Fractures
+   (cyan) and Collapses (pink) parts. */
+.fracture-card__status .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--fg-muted);
+  margin-right: 6px;
+  vertical-align: middle;
+  transform: translateY(-1px);
+}
+.fracture-card__status--live { color: var(--arc-hex); }
+.fracture-card__status--live .dot {
+  background: var(--arc-hex);
+  box-shadow: 0 0 8px var(--arc-hex);
+}
+/* When a card is "upcoming" we drop its hover affordance — it shouldn't
+   feel clickable since the destination isn't built yet. */
+.fracture-card[aria-disabled="true"] { cursor: not-allowed; }
+.fracture-card[aria-disabled="true"]:hover {
+  border-color: var(--hairline);
+  background: var(--void-3);
+  box-shadow: none;
+  transform: none;
+}
+.fracture-card[aria-disabled="true"]:hover .fracture-card__cta { color: var(--fg-muted); }
+.fracture-card[aria-disabled="true"]:hover .fracture-card__cta .arr { transform: none; }
+.fracture-card[aria-disabled="true"] .fracture-card__title { color: var(--fg-2); }
+.fracture-card__formats {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: auto;
+}
+.fmt {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border: 1px solid var(--hairline-strong);
+  color: var(--fg-muted);
+}
+.fmt--explainer { color: var(--yellow); border-color: rgba(255,224,0,0.35); }
+.fmt--short     { color: var(--signal-violet); border-color: rgba(167,139,250,0.40); }
+.fmt--static    { color: var(--signal-green); border-color: rgba(74,222,128,0.40); }
+.fmt--podcast   { color: #FF7A29; border-color: rgba(255,122,41,0.42); }
+.fracture-card__cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  transition: color var(--dur-fast) var(--ease);
+}
+.fracture-card__cta .arr {
+  display: inline-block;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.fracture-card:hover .fracture-card__cta { color: var(--arc-hex); }
+.fracture-card:hover .fracture-card__cta .arr { transform: translateX(3px); }
+
+/* ===========================================================
+   FOOTER — prev/next part nav + index link
+   =========================================================== */
+.part-foot {
+  padding: clamp(48px, 6vw, 88px) 0;
+  border-top: 1px solid var(--hairline);
+}
+.part-foot__nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 700px) {
+  .part-foot__nav { grid-template-columns: 1fr; }
+  .part-foot__nav > div:empty { display: none; }
+}
+.part-foot__link {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: clamp(20px, 2vw, 28px);
+  border: 1px solid var(--hairline);
+  background: var(--void-3);
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  transition: border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease);
+}
+.part-foot__link:hover {
+  border-color: var(--arc-hex);
+  color: var(--fg);
+  background: var(--void-4);
+}
+.part-foot__link .lbl {
+  color: var(--fg-muted);
+  font-size: 9.5px;
+}
+.part-foot__link .ttl {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: clamp(15px, 1.4vw, 18px);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--fg);
+}
+.part-foot__link--prev { text-align: left; }
+.part-foot__link--next { text-align: right; align-items: flex-end; }
+.part-foot__back {
+  display: block;
+  margin-top: clamp(20px, 2vw, 32px);
+  padding: clamp(18px, 2vw, 24px);
+  text-align: center;
+  border: 1px solid var(--hairline);
+  background: var(--void);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.part-foot__back:hover {
+  border-color: var(--arc-hex);
+  color: var(--arc-hex);
+}
+
+/* ===========================================================
+   GLOBAL FOOTER (mirrors the home page footer)
+   =========================================================== */
+.footer {
+  border-top: 1px solid var(--hairline);
+  padding: clamp(60px, 7vw, 100px) 0 40px;
+  background: var(--void-2);
+  position: relative;
+  z-index: 1;
+}
+.footer__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: clamp(32px, 5vw, 80px);
+  margin-bottom: clamp(40px, 5vw, 72px);
+}
+@media (max-width: 900px) { .footer__grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .footer__grid { grid-template-columns: 1fr; } }
+.footer__mark {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(36px, 4.4vw, 56px);
+  line-height: 0.92;
+  margin: 0 0 18px;
+  color: var(--fg);
+  letter-spacing: 0.01em;
+}
+.footer__byline {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.footer__col-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 18px;
+}
+.footer__col ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.footer__col a {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  transition: color var(--dur-fast) var(--ease);
+}
+.footer__col a:hover { color: var(--yellow); }
+.footer__bottom {
+  display: flex; justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.footer__cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: var(--pink);
+  padding: 12px 18px;
+  transition: background var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+.footer__cta:hover {
+  box-shadow: 0 0 0 1px var(--pink), 0 8px 24px -8px rgba(255,45,111,0.55);
+}
+.footer__cta .arr-ico { width: 14px; height: 14px; }
+
+</style>
+</head>
+<body data-screen-label="part-01" data-arc="free">
+
+<!-- ===== GLOBAL NAV + SEARCH BAR + BREADCRUMB =====
+     Same chrome as the home page so the visitor never feels stranded
+     inside a Part. The legacy "BACK TO EXPLORE" pill moved from the
+     nav into the breadcrumb row below the search bar. -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="../index.html">THE BOOK OF ONENESS</a>
+    <ul class="nav__links">
+      <li><a href="../index.html#the-book">The Book</a></li>
+      <li><a href="../index.html#listen">Listen</a></li>
+      <li><a href="../index.html#watch">Watch</a></li>
+      <li><a href="../index.html#explore" class="is-active">Explore</a></li>
+      <li><a href="../index.html#glossary">Glossary</a></li>
+      <li><a href="../index.html#about">About</a></li>
+    </ul>
+    <a class="nav__cta" href="../get-the-book">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+  </div>
+</nav>
+
+
+</div>
+
+<div class="crumbs">
+  <div class="crumbs__inner">
+    <div class="crumbs__trail">
+      <a class="crumbs__back" href="../index.html#explore">
+        <span class="arr" aria-hidden="true">←</span> BACK TO EXPLORE
+      </a>
+      <span class="sep">/</span>
+      <a href="../index.html">Home</a>
+      <span class="sep">/</span>
+      <a href="../index.html#explore">Explore</a>
+      <span class="sep">/</span>
+      <span class="active" aria-current="page">Part I</span>
+    </div>
+    <div class="crumbs__here">
+      <span class="num">I / XX</span>FRACTURES · 1 — 14
+    </div>
+  </div>
+</div>
+
+<!-- Hero — full slab. No cover image; the Part numeral + title carry it. -->
+<header class="part-hero">
+  <div class="container">
+    <div class="part-hero__inner">
+      <div class="part-hero__eyebrow">
+        <span class="arc-dot"></span>
+        // THE BOOK OF ONENESS · <span class="mirror-lockup"><span class="brk">[</span>MIRRØR<span class="brk">]</span></span>
+      </div>
+      <p class="part-hero__numeral">PART I</p>
+      <h1 class="part-hero__title">
+        <span class="lf">THE FIRST</span>
+        <span class="lf">STIRRING</span>
+      </h1>
+      <div class="part-hero__count">
+        <span class="num">14</span>FRACTURES · F 1 — 14
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- FRACTURE INDEX — 14 cards for Part I (F 1–14) -->
+<section class="section section--alt">
+  <div class="container">
+    <header class="section__head">
+      <div class="eyebrow">
+        <span class="slash">/</span><span class="num">I</span><span>FRACTURE INDEX</span>
+      </div>
+      <h2 class="section__title">Fractures <span class="accent">1 — 14</span></h2>
+      <p class="section__sub">Each Fracture is a mechanism, named precisely. Open one to see its Explainer, Short, and Static visual.</p>
+    </header>
+
+    <!--
+      14 Fracture cards for Part I. F1 (ONENESS) is LIVE — links to its
+      dedicated page. F2–F14 are UPCOMING; titles locked from the
+      manuscript, content production in flight. The status dot picks up
+      the arc accent (cyan here, pink on Collapse parts).
+    -->
+    <div class="fractures-grid">
+      <a class="fracture-card" href="../fractures/fracture-01-oneness.html">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 001</span><span class="fracture-card__status fracture-card__status--live"><span class="dot"></span>LIVE</span></div>
+        <h3 class="fracture-card__title">ONENESS</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">OPEN <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 002</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">NOW</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 003</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">FORMLESSNESS</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 004</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">THE FIELD</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 005</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">THE PULSE</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 006</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">THE PATTERN</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 007</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">FORM</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 008</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">IMPERMANENCE</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 009</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">THE ACHE</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 010</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">INTELLIGENCE</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 011</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">LIFE</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 012</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">THE BODY</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 013</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">SENSATION</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+      <a class="fracture-card" href="#" aria-disabled="true">
+        <div class="fracture-card__top"><span class="fracture-card__num">F · 014</span><span class="fracture-card__status"><span class="dot"></span>UPCOMING</span></div>
+        <h3 class="fracture-card__title">THE SURROUND</h3>
+        <div class="fracture-card__formats">
+          <span class="fmt fmt--podcast">PODCAST</span><span class="fmt fmt--explainer">EXPLAINER</span><span class="fmt fmt--short">SHORT</span><span class="fmt fmt--static">STATIC</span></div>
+        <span class="fracture-card__cta">SOON <span class="arr">→</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Part footer — next part only (Part I has no previous, so the
+     left slot stays empty rather than rendering a button). The
+     centered "back to" button lives on Fracture pages (where it
+     returns to its parent Part index), not on Part pages — the
+     top nav + global footer cover navigation here. -->
+<section class="part-foot">
+  <div class="container">
+    <div class="part-foot__nav">
+      <div></div>
+      <a class="part-foot__link part-foot__link--next" href="part-02.html">
+        <span class="lbl">// NEXT · PART II</span>
+        <span class="ttl">THE HUMAN PATTERN →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ====== GLOBAL FOOTER — mirrors the home page footer chrome ====== -->
+<footer class="footer" data-screen-label="part-footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <h3 class="footer__mark">THE BOOK OF ONENESS</h3>
+        <p class="footer__byline">
+          by <span class="brand-mirror"><span class="brk">[</span>MIRRØR<span class="brk">]</span></span>  <span class="brand-pub">·  Published by MIRROR Publishing</span>
+        </p>
+      </div>
+      <div class="footer__col">
+        <h6 class="footer__col-label">// Pages</h6>
+        <ul>
+          <li><a href="../index.html#the-book">The Book</a></li>
+          <li><a href="../index.html#listen">Listen</a></li>
+          <li><a href="../index.html#watch">Watch</a></li>
+          <li><a href="../index.html#explore">Explore</a></li>
+          <li><a href="../index.html#about">About</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h6 class="footer__col-label">// Channels</h6>
+        <ul>
+          <li><a href="https://youtube.com/@mirrortransmissions">YouTube</a></li>
+          <li><a href="https://tiktok.com/@mirrortransmissions">TikTok</a></li>
+          <li><a href="https://instagram.com/mirrortransmissions">Instagram</a></li>
+          <li><a href="https://facebook.com/mirrortransmissions">Facebook</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h6 class="footer__col-label">// Get the book</h6>
+        <ul>
+          <li><a href="../get-the-book">All editions</a></li>
+          <li><a href="../index.html#explore">Explore parts</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© MIRROR Publishing 2026  ·  All rights reserved</span>
+      <a class="footer__cta" href="../get-the-book">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Glossary data + global search controller (icon in nav opens
+     the fullscreen search overlay; same wiring on every page). -->
+<script src="../glossary-data.js"></script>
+<script src="../glossary-search.js"></script>
+
+</body>
+</html>
