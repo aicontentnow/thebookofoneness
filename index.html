@@ -343,7 +343,7 @@ img { display: block; max-width: 100%; }
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--hairline);
-  z-index: 100;
+  z-index: 200;
 }
 .nav__inner {
   display: flex; align-items: center; justify-content: space-between;
@@ -685,7 +685,7 @@ img { display: block; max-width: 100%; }
 .hero__h1 {
   font-family: var(--f-display);
   font-weight: 400;
-  font-size: clamp(60px, 13vw, 220px);
+  font-size: clamp(48px, 9vw, 160px);
   line-height: 0.86;
   letter-spacing: -0.01em;
   margin: 0;
@@ -712,38 +712,14 @@ img { display: block; max-width: 100%; }
    MIRROR Pub.   = the imprint. Plain muted typography, subordinate.
    The two should never read as the same brand at a glance. */
 .brand-mirror {
-  /* Chrome metallic gradient — echoes the chrome aura on the About
-     mark, sized down to a typographic register. */
-  background: linear-gradient(
-    178deg,
-    #ffffff 0%,
-    #d8dde6 22%,
-    #f4f6fa 44%,
-    #8c93a0 58%,
-    #c8ced8 78%,
-    #ffffff 100%
-  );
-  -webkit-background-clip: text;
-          background-clip: text;
-  -webkit-text-fill-color: transparent;
-          color: transparent;
+  /* Plain white — brackets must be fully visible, no gradient treatment */
+  color: #F0F0F0;
   font-weight: 600;
   letter-spacing: 0.01em;
-  text-shadow: 0 0 24px rgba(220,228,240,0.18);
 }
 .brand-mirror .brk {
-  /* Brackets dim slightly so the wordmark dominates. The whole
-     lockup still reads as one object — chrome from start to end. */
-  opacity: 0.55;
+  opacity: 0.7;
   font-weight: 400;
-}
-/* Fallback for browsers without background-clip:text */
-@supports not (-webkit-background-clip: text) {
-  .brand-mirror {
-    color: #e2e6eb;
-    -webkit-text-fill-color: currentColor;
-    background: none;
-  }
 }
 .brand-pub {
   /* MIRROR Publishing — the logistics layer. Plain, subordinate,
@@ -2209,18 +2185,33 @@ img { display: block; max-width: 100%; }
    stay redacted (released by Bodhi later, per brief). */
 .part__cover-blur,
 .part__cover-veil { transition: filter 600ms var(--ease), opacity 600ms var(--ease); }
+.part--locked .part__locked-eyebrow { transition: opacity 600ms var(--ease); }
 .part--locked .part__locked-glyph,
 .part--locked .part__locked-tag { transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
-.parts--unlocked .part--locked .part__cover-blur { filter: blur(0) saturate(1.05) brightness(1); }
+/* Unlock: reset the flex cover layout back to normal block so the image fills naturally */
+.parts--unlocked .part--locked .part__cover {
+  display: block;
+  padding: 0;
+}
+/* Unlock: reset image from the oversized blurred overlay to a normal cover fill */
+.parts--unlocked .part--locked .part__cover-blur {
+  filter: blur(0) saturate(1.05) brightness(1);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* Unlock: hide all lock overlay chrome */
 .parts--unlocked .part--locked .part__cover-veil { opacity: 0; }
+.parts--unlocked .part--locked .part__locked-eyebrow {
+  opacity: 0;
+  pointer-events: none;
+}
 .parts--unlocked .part--locked .part__locked-glyph,
 .parts--unlocked .part--locked .part__locked-tag {
   opacity: 0;
   transform: scale(0.85);
   pointer-events: none;
-}
-.parts--unlocked .part--locked .part__locked-eyebrow {
-  text-shadow: 0 1px 12px rgba(0,0,0,0.95);
 }
 .parts--unlocked .part--locked { border-color: rgba(255,45,111,0.30); }
 .parts--unlocked .part--locked .part__meta-cta { color: var(--pink); }
@@ -2894,6 +2885,131 @@ img { display: block; max-width: 100%; }
 [data-reveal][data-delay="1"] { transition-delay: 80ms; }
 [data-reveal][data-delay="2"] { transition-delay: 160ms; }
 [data-reveal][data-delay="3"] { transition-delay: 240ms; }
+
+/* =============================================================
+   MOBILE NAV -- hamburger button + full-screen overlay
+   Visible at max-width: 800px only.
+   ============================================================= */
+
+/* Hamburger button */
+.nav__hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+.nav__hamburger-bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #F0F0F0;
+  border-radius: 1px;
+  transition: transform 280ms ease, opacity 180ms ease;
+  transform-origin: center;
+}
+/* X state when nav is open */
+body.nav-open .nav__hamburger-bar:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+body.nav-open .nav__hamburger-bar:nth-child(2) {
+  opacity: 0;
+}
+body.nav-open .nav__hamburger-bar:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+@media (max-width: 800px) {
+  .nav__hamburger { display: flex; }
+}
+
+/* Mobile overlay: z-index 150 sits above search bar (99) but below nav (200).
+   Overlay covers the search strip; hamburger/X in the nav stays tappable. */
+.mobile-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--nav-h);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 280ms ease;
+}
+body.nav-open .mobile-nav {
+  opacity: 1;
+  pointer-events: all;
+}
+.mobile-nav__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+  padding: 0 32px;
+}
+.mobile-nav__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.mobile-nav__links li a {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #F0F0F0;
+  text-decoration: none;
+  padding: 14px 0;
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  transition: color 150ms ease;
+}
+.mobile-nav__links li:first-child a {
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.mobile-nav__links li a:hover,
+.mobile-nav__links li a:focus {
+  color: var(--gold);
+  outline: none;
+}
+.mobile-nav__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #000;
+  background: #F0F0F0;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 2px;
+  transition: background 150ms ease, color 150ms ease;
+}
+.mobile-nav__cta:hover {
+  background: var(--gold);
+}
+.mobile-nav__cta .arr-ico {
+  width: 14px;
+  height: 14px;
+}
 </style>
 </head>
 <body>
@@ -2916,9 +3032,29 @@ img { display: block; max-width: 100%; }
       <li><a href="#glossary">Glossary</a></li>
       <li><a href="#about">About</a></li>
     </ul>
-    <a class="nav__cta" href="/get-the-book">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+    <a class="nav__cta" href="https://books2read.com/thebookofoneness">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+    <button class="nav__hamburger" id="navHamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNav">
+      <span class="nav__hamburger-bar"></span>
+      <span class="nav__hamburger-bar"></span>
+      <span class="nav__hamburger-bar"></span>
+    </button>
   </div>
 </nav>
+
+<!-- ====== MOBILE NAV OVERLAY ====== -->
+<div class="mobile-nav" id="mobileNav" aria-hidden="true">
+  <nav class="mobile-nav__inner">
+    <ul class="mobile-nav__links">
+      <li><a href="#the-book">The Book</a></li>
+      <li><a href="#listen">Listen</a></li>
+      <li><a href="#watch">Watch</a></li>
+      <li><a href="#explore">Explore</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <a class="mobile-nav__cta" href="https://books2read.com/thebookofoneness">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+  </nav>
+</div>
 
 <!-- ====== FLOATING SOCIAL (fixed right) ====== -->
 <aside class="float-social" aria-label="Social channels">
@@ -2937,10 +3073,6 @@ img { display: block; max-width: 100%; }
     <div class="hero__top" data-reveal>
       <span class="pulse"></span>
       <span class="pulse-label">Available now</span>
-      <span class="hero__sep">/</span>
-      <span>Published 14.02.2026</span>
-      <span class="hero__sep">/</span>
-      <span>143 Fractures · 50 Collapses</span>
     </div>
 
     <div class="hero__center">
@@ -2949,14 +3081,11 @@ img { display: block; max-width: 100%; }
         <span class="lf" data-glitch="THE BOOK">THE BOOK</span>
         <span class="lf" data-glitch="OF ONENESS">OF ONENESS</span>
       </h1>
-      <p class="hero__byline" data-reveal data-delay="2">
-        by <span class="brand-mirror"><span class="brk">[</span>MIRRØR<span class="brk">]</span></span>
-      </p>
       <p class="hero__tagline" data-reveal data-delay="2">
         A precision interruption. Not spirituality. Not self-help. A structural examination of how <span class="cap">THE MIND</span> constructs <span class="cap">THE STORY OF THE SELF</span>.
       </p>
       <div class="hero__ctas" data-reveal data-delay="3">
-        <a class="btn btn--pink" href="/get-the-book">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+        <a class="btn btn--pink" href="https://books2read.com/thebookofoneness">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
         <a class="btn btn--ghost" href="#explore">EXPLORE THE FRACTURES <svg class="arr-ico arr-ico--down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 5 L12 19 M6 13 L12 19 L18 13"/></svg></a>
       </div>
     </div>
@@ -2980,10 +3109,8 @@ img { display: block; max-width: 100%; }
     </header>
 
     <!--
-      MASTER CTA · all GET THE BOOK affordances route to /get-the-book.
-      That page handles retailer routing under the hood — customer-facing
-      copy here stays plain. Do NOT route directly to Amazon / Bookshop /
-      B&N / IngramSpark from this page.
+      MASTER CTA · all GET THE BOOK affordances route to books2read.com/thebookofoneness.
+      Books2Read handles regional retailer routing (Amazon, Bookshop, B&N, IngramSpark).
     -->
     <div class="master-cta" data-reveal>
       <div class="master-cta__copy">
@@ -2991,7 +3118,7 @@ img { display: block; max-width: 100%; }
         <h3 class="master-cta__title">Get the book.</h3>
         <p class="master-cta__sub">Tap below: we'll send you to your closest retailer. Or ask your local bookstore or library to order it in.</p>
       </div>
-      <a class="btn btn--pink" href="/get-the-book">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+      <a class="btn btn--pink" href="https://books2read.com/thebookofoneness">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
     </div>
 
     <!-- Editions — two cards, equal weight, no hierarchy.
@@ -3000,7 +3127,7 @@ img { display: block; max-width: 100%; }
          BOOK — we don't position anything as premium vs not-premium. -->
     <div class="editions" data-reveal>
 
-      <a class="edition edition--day" href="/get-the-book">
+      <a class="edition edition--day" href="https://books2read.com/thebookofoneness">
         <div class="edition__cover">
           <span class="edition__format edition__format--day">Paperback</span>
           <img src="assets/cover-day-edition.jpg" alt="THE BOOK OF ONENESS — Day Edition paperback">
@@ -3014,7 +3141,7 @@ img { display: block; max-width: 100%; }
         </div>
       </a>
 
-      <a class="edition edition--ebook" href="/get-the-book">
+      <a class="edition edition--ebook" href="https://books2read.com/thebookofoneness">
         <div class="edition__cover">
           <span class="edition__format edition__format--ebook">Ebook</span>
           <img src="assets/cover-ebook-edition.jpg" alt="THE BOOK OF ONENESS — Ebook edition">
@@ -3436,7 +3563,7 @@ img { display: block; max-width: 100%; }
 
           <p class="gate__note">
             <span class="slash">//</span>One-time link. <span class="sep">·</span> No account. <span class="sep">·</span> No subscription.
-            <a class="gate__alt" href="/get-the-book">don't have the book yet? <span class="arr" aria-hidden="true">→</span> <strong>GET THE BOOK</strong></a>
+            <a class="gate__alt" href="https://books2read.com/thebookofoneness">don't have the book yet? <span class="arr" aria-hidden="true">→</span> <strong>GET THE BOOK</strong></a>
           </p>
         </div>
 
@@ -3490,7 +3617,7 @@ img { display: block; max-width: 100%; }
 
           <p class="gate__note">
             <span class="slash">//</span>One-time link. <span class="sep">·</span> No account. <span class="sep">·</span> No subscription.
-            <a class="gate__alt" href="/get-the-book">don't have the book yet? <span class="arr" aria-hidden="true">→</span> <strong>GET THE BOOK</strong></a>
+            <a class="gate__alt" href="https://books2read.com/thebookofoneness">don't have the book yet? <span class="arr" aria-hidden="true">→</span> <strong>GET THE BOOK</strong></a>
           </p>
         </div>
 
@@ -3763,9 +3890,9 @@ img { display: block; max-width: 100%; }
     <header class="section__head">
       <div data-reveal>
         <div class="eyebrow">
-          <span class="slash">/</span><span class="num">05</span><span class="lbl">GLOSSARY</span>
+          <span class="slash">/</span><span class="num">05</span><span class="lbl">DEFINITIONS</span>
         </div>
-        <h2 class="section__title">THE CORE TERMS</h2>
+        <h2 class="section__title">GLOSSARY</h2>
         <p class="section__sub">The language of <em>THE BOOK OF ONENESS</em>, defined precisely. Filter by bucket or search.</p>
       </div>
     </header>
@@ -3833,9 +3960,9 @@ img { display: block; max-width: 100%; }
     <header class="section__head">
       <div data-reveal>
         <div class="eyebrow">
-          <span class="slash">/</span><span class="num">06</span><span class="lbl">AUTHOR</span>
+          <span class="slash">/</span><span class="num">06</span><span class="lbl">ABOUT</span>
         </div>
-        <h2 class="section__title">ABOUT THE AUTHOR</h2>
+        <h2 class="section__title">ABOUT</h2>
       </div>
     </header>
 
@@ -3872,7 +3999,7 @@ img { display: block; max-width: 100%; }
       </div>
       <div class="faq__item">
         <h4 class="faq__q">// Where can I buy it?</h4>
-        <p class="faq__a">Worldwide. The <a href="/get-the-book">GET THE BOOK</a> link auto-routes to your closest retailer: Amazon, Bookshop, Barnes &amp; Noble, or IngramSpark, by region.</p>
+        <p class="faq__a">Worldwide. The <a href="https://books2read.com/thebookofoneness">GET THE BOOK</a> link auto-routes to your closest retailer: Amazon, Bookshop, Barnes &amp; Noble, or IngramSpark, by region.</p>
       </div>
       <div class="faq__item">
         <h4 class="faq__q">// What is BOOE?</h4>
@@ -3892,9 +4019,6 @@ img { display: block; max-width: 100%; }
     <div class="footer__grid">
       <div>
         <h3 class="footer__mark" data-glitch="THE BOOK OF ONENESS">THE BOOK OF ONENESS</h3>
-        <p class="footer__byline">
-          by <span class="brand-mirror"><span class="brk">[</span>MIRRØR<span class="brk">]</span></span>  <span class="brand-pub">·  Published by MIRROR Publishing</span>
-        </p>
       </div>
       <div class="footer__col">
         <h6 class="footer__col-label">// Pages</h6>
@@ -3916,25 +4040,17 @@ img { display: block; max-width: 100%; }
           <li><a href="https://facebook.com/mirrortransmissions">Facebook</a></li>
         </ul>
       </div>
-      <div class="footer__col">
-        <h6 class="footer__col-label">// Contact</h6>
-        <ul>
-          <li><a href="mailto:charles@mirrorpublishinghouse.com">Press</a></li>
-          <li><a href="mailto:charles@mirrorpublishinghouse.com">Rights</a></li>
-          <li><a href="/get-the-book">Get the book</a></li>
-        </ul>
-      </div>
     </div>
 
     <div class="footer__bottom">
-      <span>© MIRROR Publishing 2026  ·  All rights reserved</span>
+      <span>© MIRROR Publishing 2026  ·  All rights reserved  ·  <a href="https://mirrorpublishinghouse.com" style="color:inherit;text-decoration:underline;text-underline-offset:3px;opacity:0.6;">mirrorpublishinghouse.com</a></span>
       <ul class="footer__social" style="list-style:none; padding:0; margin:0;">
         <li><a href="https://youtube.com/@mirrortransmissions" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a></li>
         <li><a href="https://tiktok.com/@mirrortransmissions" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 6.3a5.7 5.7 0 0 1-3.4-1.2 5.6 5.6 0 0 1-2.2-4H10v13.6a3 3 0 1 1-2.2-2.9V7.6A6.6 6.6 0 1 0 14 14.1V8.7a8.9 8.9 0 0 0 5.6 1.9V6.3z"/></svg></a></li>
         <li><a href="https://instagram.com/mirrortransmissions" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a></li>
         <li><a href="https://facebook.com/mirrortransmissions" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3.2H13V8.8c0-.9.3-1.6 1.6-1.6h1.7V4.3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7v3.2h2.6V22H13z"/></svg></a></li>
       </ul>
-      <a class="footer__cta" href="/get-the-book">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
+      <a class="footer__cta" href="https://books2read.com/thebookofoneness">GET THE BOOK <svg class="arr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12 L19 12 M13 6 L19 12 L13 18"/></svg></a>
     </div>
   </div>
 </footer>
@@ -4162,6 +4278,43 @@ img { display: block; max-width: 100%; }
   // separately). This script only owns the home-page glossary
   // carousel + filter pills.
   // -----------------------------------------------------------
+})();
+</script>
+
+<script>
+/* Mobile nav toggle */
+(function () {
+  var btn     = document.getElementById('navHamburger');
+  var overlay = document.getElementById('mobileNav');
+  if (!btn || !overlay) return;
+
+  function openNav() {
+    document.body.classList.add('nav-open');
+    btn.setAttribute('aria-expanded', 'true');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+  }
+
+  function closeNav() {
+    document.body.classList.remove('nav-open');
+    btn.setAttribute('aria-expanded', 'false');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+  }
+
+  btn.addEventListener('click', function () {
+    document.body.classList.contains('nav-open') ? closeNav() : openNav();
+  });
+
+  /* Close when any overlay link is tapped */
+  overlay.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', closeNav);
+  });
+
+  /* Close on Escape key */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && document.body.classList.contains('nav-open')) closeNav();
+  });
 })();
 </script>
 

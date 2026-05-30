@@ -70,12 +70,11 @@ Deno.serve(async (req: Request) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      // TODO: update to access@thebookofoneness.com once domain is verified in Resend
-      from: 'THE BOOK OF ONENESS <onboarding@resend.dev>',
+      from: 'THE BOOK OF ONENESS <access@thebookofoneness.com>',
       to: [email],
-      subject: 'Your access to the Collapses',
+      subject: 'You requested access to the Collapses: Parts XIII–XX',
       html: `
-        <p>You requested access to Parts XIII through XX: the fifty Collapses.</p>
+        <p>You requested access to Parts XIII through XX.</p>
         <p>
           <a href="${unlockUrl}" style="
             display:inline-block;
@@ -85,7 +84,7 @@ Deno.serve(async (req: Request) => {
             text-decoration:none;
             font-family:monospace;
             letter-spacing:0.05em;
-          ">UNLOCK ACCESS</a>
+          ">Unlock Access</a>
         </p>
         <p style="color:#666;font-size:12px;">
           This link expires in 24 hours. If you did not request this, ignore this email.
