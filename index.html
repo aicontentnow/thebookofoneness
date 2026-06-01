@@ -2188,18 +2188,29 @@ img { display: block; max-width: 100%; }
 .part--locked .part__locked-eyebrow { transition: opacity 600ms var(--ease); }
 .part--locked .part__locked-glyph,
 .part--locked .part__locked-tag { transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
-/* Unlock: reset the flex cover layout back to normal block so the image fills naturally */
+/* Unlock: reset the flex cover layout back to normal block so the image fills naturally.
+   Restate aspect-ratio explicitly to force a fresh height recalculate after the
+   display change. Some mobile Safari versions do not recompute it automatically. */
 .parts--unlocked .part--locked .part__cover {
   display: block;
   padding: 0;
+  aspect-ratio: 441 / 666;
 }
-/* Unlock: reset image from the oversized blurred overlay to a normal cover fill */
+/* Unlock: reset image from the oversized blurred overlay to a normal cover fill.
+   Use explicit top/left/width/height instead of the inset shorthand. The inset
+   property is a logical-properties alias that older iOS Safari (pre-14.1) silently
+   ignores, which left the image at its original -18% offset and appeared blank.
+   Also restate object-fit:cover to ensure it is not overridden by specificity. */
 .parts--unlocked .part--locked .part__cover-blur {
   filter: blur(0) saturate(1.05) brightness(1);
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 /* Unlock: hide all lock overlay chrome */
 .parts--unlocked .part--locked .part__cover-veil { opacity: 0; }
@@ -2250,6 +2261,10 @@ img { display: block; max-width: 100%; }
   --azure-d:    #2D6FE5;
   --azure-tint: rgba(77,138,255,0.10);
 }
+
+/* Issue #20: subtitle is a single line at 83 chars; 60ch cap wraps "search".
+   Let the container width constrain it instead. */
+#glossary .section__sub { max-width: none; }
 
 .glossary {
   display: grid;

@@ -86,6 +86,18 @@ Deno.serve(async (req: Request) => {
             letter-spacing:0.05em;
           ">Unlock Access</a>
         </p>
+        <p>
+          <a href="https://books2read.com/thebookofoneness" style="
+            display:inline-block;
+            background:#FF00AA;
+            color:#fff;
+            padding:12px 24px;
+            text-decoration:none;
+            font-family:monospace;
+            letter-spacing:0.05em;
+            margin-top:16px;
+          ">Get the Book</a>
+        </p>
         <p style="color:#666;font-size:12px;">
           This link expires in 24 hours. If you did not request this, ignore this email.
         </p>
