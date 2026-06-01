@@ -2897,6 +2897,14 @@ img { display: block; max-width: 100%; }
   opacity: 0;
   transform: translateY(20px);
 }
+/* When the collapse section is already unlocked, prevent the
+   reveal-on-scroll observer from hiding it via data-pending.
+   ID specificity (1-0-0) beats the attribute rule (0-2-0) above. */
+#collapses.is-unlocked[data-pending] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
 [data-reveal][data-delay="1"] { transition-delay: 80ms; }
 [data-reveal][data-delay="2"] { transition-delay: 160ms; }
 [data-reveal][data-delay="3"] { transition-delay: 240ms; }
@@ -3799,6 +3807,12 @@ body.nav-open .mobile-nav {
       grid.classList.add('parts--unlocked');
       arc.classList.add('is-unlocked');
       try { localStorage.setItem(LS_KEY, 'true'); } catch (_) {}
+      // The reveal-on-scroll script (further down) runs synchronously
+      // during page parse and may add data-pending to #collapses because
+      // it is below the fold on mobile. That triggers an opacity:0 fade
+      // which hides the unlocked cards. A setTimeout(0) defers past the
+      // IO script so we can strip data-pending after it has been set.
+      setTimeout(function() { if (arc) arc.removeAttribute('data-pending'); }, 0);
     } else {
       grid.classList.remove('parts--unlocked');
       arc.classList.remove('is-unlocked');
