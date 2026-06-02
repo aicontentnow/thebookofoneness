@@ -2188,29 +2188,22 @@ img { display: block; max-width: 100%; }
 .part--locked .part__locked-eyebrow { transition: opacity 600ms var(--ease); }
 .part--locked .part__locked-glyph,
 .part--locked .part__locked-tag { transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
-/* Unlock: reset the flex cover layout back to normal block so the image fills naturally.
-   Restate aspect-ratio explicitly to force a fresh height recalculate after the
-   display change. Some mobile Safari versions do not recompute it automatically. */
+/* Unlock: JS sets cover background-image from the img src (iOS Safari fix).
+   Reset the flex cover layout to a plain block container so the
+   background-image fills it naturally. Keep aspect-ratio for height. */
 .parts--unlocked .part--locked .part__cover {
   display: block;
   padding: 0;
   aspect-ratio: 441 / 666;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
-/* Unlock: reset image from the oversized blurred overlay to a normal cover fill.
-   Use explicit top/left/width/height instead of the inset shorthand. The inset
-   property is a logical-properties alias that older iOS Safari (pre-14.1) silently
-   ignores, which left the image at its original -18% offset and appeared blank.
-   Also restate object-fit:cover to ensure it is not overridden by specificity. */
+/* The part__cover-blur img is hidden via JS (visibility:hidden).
+   Keep filter reset here as a fallback for any edge cases. */
 .parts--unlocked .part--locked .part__cover-blur {
   filter: blur(0) saturate(1.05) brightness(1);
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  visibility: hidden;
 }
 /* Unlock: hide all lock overlay chrome */
 .parts--unlocked .part--locked .part__cover-veil { opacity: 0; }
@@ -3807,12 +3800,39 @@ body.nav-open .mobile-nav {
       grid.classList.add('parts--unlocked');
       arc.classList.add('is-unlocked');
       try { localStorage.setItem(LS_KEY, 'true'); } catch (_) {}
-      // The reveal-on-scroll script (further down) runs synchronously
-      // during page parse and may add data-pending to #collapses because
-      // it is below the fold on mobile. That triggers an opacity:0 fade
-      // which hides the unlocked cards. A setTimeout(0) defers past the
-      // IO script so we can strip data-pending after it has been set.
-      setTimeout(function() { if (arc) arc.removeAttribute('data-pending'); }, 0);
+
+      // iOS Safari bug: position:absolute + object-fit:cover on an <img>
+      // inside a container that switches flex -> block layout fails to
+      // repaint the image content -- shows blank white.
+      // Fix: promote the image src to a CSS background-image on the
+      // cover div. background-image rendering is rock-solid on all browsers.
+      var covers = grid.querySelectorAll('.part--locked .part__cover');
+      console.log('[booe-gate] unlocking', covers.length, 'collapse cards');
+      for (var i = 0; i < covers.length; i++) {
+        var cover = covers[i];
+        var img   = cover.querySelector('.part__cover-blur');
+        if (img) {
+          console.log('[booe-gate] card', i, 'img.src=', img.src,
+            'img.complete=', img.complete,
+            'cover.classes=', cover.className);
+          cover.style.backgroundImage    = 'url(' + img.src + ')';
+          cover.style.backgroundSize     = 'cover';
+          cover.style.backgroundPosition = 'center';
+          img.style.visibility           = 'hidden';
+        } else {
+          console.warn('[booe-gate] card', i, 'no img found');
+        }
+      }
+
+      // Remove data-pending (set by reveal-on-scroll observer) so the
+      // unlocked section is not hidden by the scroll-reveal animation.
+      setTimeout(function() {
+        if (arc) {
+          arc.removeAttribute('data-pending');
+          console.log('[booe-gate] data-pending removed, arc classes=',
+            arc.className, 'arc.style.opacity=', arc.style.opacity);
+        }
+      }, 0);
     } else {
       grid.classList.remove('parts--unlocked');
       arc.classList.remove('is-unlocked');
